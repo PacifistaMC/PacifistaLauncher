@@ -11,15 +11,17 @@ import java.util.Arrays;
 
 public class Main {
 
-    private static Main instance;
-
     private final Launcheur launcheur;
     private MojangAuth mojangAuth;
     private GameJVM gameJVM;
 
-    private Main() throws LauncherException, IOException {
+    private Main(String[] args) throws LauncherException, IOException {
+        if (!Launcheur.DATA_FOLDER.exists() && !Launcheur.DATA_FOLDER.mkdir())
+            throw new IOException("Impossible de créer le dossier data.");
         this.gameJVM = null;
         this.mojangAuth = MojangAuth.login();
+        if (this.mojangAuth == null && args.length == 2)
+            this.mojangAuth = MojangAuth.login(args[0], args[1]);
         this.launcheur = new Launcheur(this);
     }
 
@@ -33,7 +35,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            instance = new Main();
+            Main instance = new Main(args);
             instance.gameJVM = GameHandle.startGame(instance);
         } catch (Exception e) {
             if (e instanceof LauncherException) {

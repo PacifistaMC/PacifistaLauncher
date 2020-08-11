@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.pacifista.launcheur.Main;
+import fr.pacifista.launcheur.utils.FileDownload;
 import fr.pacifista.launcheur.utils.LauncherException;
 import fr.pacifista.launcheur.utils.OsType;
 import fr.pacifista.launcheur.utils.Utils;
@@ -19,18 +20,18 @@ public class Launcheur {
     public static final String VERSION_LIST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     public static final String RESSOURCE_URL = "https://resources.download.minecraft.net";
     public static final File DATA_FOLDER = new File("." + File.separator + "data");
-    public static final File GAME_LIB_FOLDER = new File(DATA_FOLDER, "gameLibs");
     public static final File GAME_FODER = new File(DATA_FOLDER, ".pacifista");
+    public static final File GAME_LIB_FOLDER = new File(GAME_FODER, "gameLibs");
     public static final File GAME_ASSETS_FOLDER = new File(GAME_FODER, "assets");
 
     private final String launcherVersion;
     private final String gameVersion;
     private final String metaUrlGameVersion;
+    private final String assetsIndexVersion;
+    private final MojangFile assetsUrl;
     private final OsType osType;
-    private final Main main;
 
     public Launcheur(Main main) throws LauncherException {
-        this.main = main;
         try {
             final String osType = System.getProperty("os.name").toLowerCase();
             if (osType.contains("win"))
@@ -41,19 +42,25 @@ public class Launcheur {
                 this.osType = OsType.LINUX;
             else
                 throw new Exception("Votre os n'est pas supporté pour jouer à Minecraft");
+
             final Properties properties = new Properties();
             properties.load(main.getClass().getClassLoader().getResourceAsStream("launcheur.properties"));
             this.launcherVersion = properties.getProperty("launcherVersion");
             this.gameVersion = properties.getProperty("gameVersion");
             this.metaUrlGameVersion = getUrlActualGameVersion();
-            if (!DATA_FOLDER.exists() && !DATA_FOLDER.mkdir())
-                throw new IOException("Impossible de créer le dossier data.");
-            if (!GAME_LIB_FOLDER.exists() && !GAME_LIB_FOLDER.mkdir())
-                throw new IOException("Impossible de créer le dossier des librairies du jeu.");
+
+            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
+            JsonObject assetIndex = jsonElement.getAsJsonObject().get("assetIndex").getAsJsonObject();
+            this.assetsIndexVersion = assetIndex.get("id").getAsString();
+            this.assetsUrl = new MojangFile(assetIndex.get("url").getAsString(), assetIndex.get("size").getAsDouble());
+
             if (!GAME_FODER.exists() && !GAME_FODER.mkdir())
                 throw new IOException("Impossible de créer le dossier .minecraft.");
+            if (!GAME_LIB_FOLDER.exists() && !GAME_LIB_FOLDER.mkdir())
+                throw new IOException("Impossible de créer le dossier des librairies du jeu.");
             if (!GAME_ASSETS_FOLDER.exists() && !GAME_ASSETS_FOLDER.mkdir())
                 throw new IOException("Impossible de créer le dossier des assets du jeu.");
+
         } catch (Exception e) {
             throw new LauncherException(new String[] {
                     "Erreur lors de l'initialisation du launcheur.",
@@ -62,7 +69,7 @@ public class Launcheur {
         }
     }
 
-    public String getUrlActualGameVersion() throws Exception {
+    private String getUrlActualGameVersion() throws Exception {
         JsonElement jsonElement = Utils.getJsonResponseFromURL(VERSION_LIST);
         JsonObject json = jsonElement.getAsJsonObject();
         JsonArray jsonArray = json.get("versions").getAsJsonArray();
@@ -80,8 +87,11 @@ public class Launcheur {
         return dataVersionURL;
     }
 
-    public List<MojangFile> getGameLibsURL() throws LauncherException {
-        List<MojangFile> libsURL = new ArrayList<>();
+
+
+    public List<FileDownload> downloadGameLibs() throws LauncherException {
+        List<MojangFile> libs = new ArrayList<>();
+        List<FileDownload> downloads = new ArrayList<>();
 
         try {
             JsonElement jsonElement = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
@@ -89,22 +99,36 @@ public class Launcheur {
             JsonArray jsonLibs = json.get("libraries").getAsJsonArray();
             for (int i = 0; i < jsonLibs.size(); ++i) {
                 JsonObject lib = jsonLibs.get(i).getAsJsonObject().get("downloads").getAsJsonObject().get("artifact").getAsJsonObject();
-                libsURL.add(new MojangFile(
+                libs.add(new MojangFile(
                         lib.get("url").getAsString(),
                         lib.get("size").getAsDouble()
                 ));
             }
-            return libsURL;
+            for (MojangFile lib : libs) {
+                File libFile = new File(Launcheur.GAME_LIB_FOLDER, lib.getFileName());
+                if (libFile.exists()) {
+                    long fileSize = libFile.length();
+                    if (fileSize == lib.getFileSize())
+                        continue;
+                    else {
+                        if (!libFile.delete())
+                            throw new LauncherException(new String[] {"Impossible de supprimer la lib Minecraft: " + lib.getFileName()});
+                    }
+                }
+                downloads.add(new FileDownload(lib.getDownloadUrl(), libFile.getPath()));
+            }
+            return downloads;
         } catch (IOException e) {
             throw new LauncherException(new String[] {
                     "Erreur lors du téléchargement des librairies de Minecraft.",
-                    "Message d'erreur: " + e.getMessage()
+                    "Veuillez vérifier votre connexion."
             });
         }
     }
 
-    public List<MojangFile> getAssetsUrl() throws LauncherException {
+    public List<FileDownload> downloadAssetsFiles() throws LauncherException {
         List<MojangFile> libsURL = new ArrayList<>();
+        List<FileDownload> dls = new ArrayList<>();
 
         try {
             String osName = "";
@@ -135,7 +159,20 @@ public class Launcheur {
                     }
                 }
             }
-            return libsURL;
+            for (MojangFile lib : libsURL) {
+                File libFile = new File(Launcheur.GAME_ASSETS_FOLDER, lib.getFileName());
+                if (libFile.exists()) {
+                    long fileSize = libFile.length();
+                    if (fileSize == lib.getFileSize())
+                        continue;
+                    else {
+                        if (!libFile.delete())
+                            throw new IOException();
+                    }
+                }
+                dls.add(new FileDownload(lib.getDownloadUrl(), libFile.getPath()));
+            }
+            return dls;
         } catch (IOException e) {
             throw new LauncherException(new String[] {
                     "Erreur lors du téléchargement des librairies de Minecraft.",
@@ -156,12 +193,21 @@ public class Launcheur {
         }
     }
 
-    public MojangFile getClientUrl() throws LauncherException {
+    public FileDownload downloadClient() throws LauncherException {
         try {
             JsonElement jsonElement = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
             JsonObject json = jsonElement.getAsJsonObject();
             JsonObject client = json.get("downloads").getAsJsonObject().get("client").getAsJsonObject();
-            return new MojangFile(client.get("url").getAsString(), client.get("size").getAsDouble());
+            MojangFile clientUrl = new MojangFile(client.get("url").getAsString(), client.get("size").getAsDouble());
+            File clientFile = new File(Launcheur.GAME_FODER, clientUrl.getFileName());
+            if (clientFile.exists()) {
+                long fileSize = clientFile.length();
+                if (fileSize != clientUrl.getFileSize()) {
+                    if (!clientFile.delete())
+                        throw new LauncherException(new String[]{"Impossible de supprimer le client Minecraft: " + clientUrl.getFileName()});
+                }
+            }
+            return new FileDownload(clientUrl.getDownloadUrl(), clientFile.getPath());
         } catch (Exception e) {
             throw new LauncherException(new String[] {
                     "Erreur lors du téléchargement du jeu Minecraft.",
@@ -180,5 +226,17 @@ public class Launcheur {
 
     public OsType getOS() {
         return osType;
+    }
+
+    public String getMetaUrlGameVersion() {
+        return metaUrlGameVersion;
+    }
+
+    public String getAssetsIndexVersion() {
+        return assetsIndexVersion;
+    }
+
+    public MojangFile getAssetsUrl() {
+        return assetsUrl;
     }
 }
