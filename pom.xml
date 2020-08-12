@@ -6,7 +6,7 @@
 
     <groupId>fr.pacifista.launcheur</groupId>
     <artifactId>PacifistaLauncheur</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -37,7 +37,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.pacifista.launcheur.Main</mainClass>
+                            <mainClass>fr.pacifista.launcher.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

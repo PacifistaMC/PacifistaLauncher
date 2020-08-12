@@ -1,7 +1,7 @@
-package fr.pacifista.launcheur.backend.game;
+package fr.pacifista.launcher.backend.game;
 
-import fr.pacifista.launcheur.utils.LauncherException;
-import fr.pacifista.launcheur.utils.StreamGobbler;
+import fr.pacifista.launcher.utils.LauncherException;
+import fr.pacifista.launcher.utils.StreamGobbler;
 
 import java.io.File;
 import java.io.IOException;

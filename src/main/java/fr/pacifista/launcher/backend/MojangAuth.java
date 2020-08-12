@@ -1,10 +1,10 @@
-package fr.pacifista.launcheur.backend;
+package fr.pacifista.launcher.backend;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.pacifista.launcheur.utils.FileActions;
-import fr.pacifista.launcheur.utils.LauncherException;
+import fr.pacifista.launcher.backend.launch.Pacifista;
+import fr.pacifista.launcher.utils.FileActions;
+import fr.pacifista.launcher.utils.LauncherException;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class MojangAuth {
 
     private static final String URL_MOJANG_AUTH = "https://authserver.mojang.com";
-    private static final File authFile = new File(Launcheur.DATA_FOLDER, "login.json");
+    private static final File authFile = new File(Pacifista.DATA_FOLDER, "login.json");
 
     private final String accessToken;
     private final String clientToken;
@@ -84,7 +84,7 @@ public class MojangAuth {
     private String getClientTokenLauncher() throws LauncherException {
         try {
             String uuid;
-            File tokenFile = new File(Launcheur.DATA_FOLDER, "clientToken.txt");
+            File tokenFile = new File(Pacifista.DATA_FOLDER, "clientToken.txt");
             if (!tokenFile.exists()) {
                 if (!tokenFile.createNewFile())
                     throw new IOException();

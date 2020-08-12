@@ -1,4 +1,4 @@
-package fr.pacifista.launcheur.utils;
+package fr.pacifista.launcher.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;

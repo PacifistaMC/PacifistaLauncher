@@ -1,4 +1,4 @@
-package fr.pacifista.launcheur.utils;
+package fr.pacifista.launcher.utils;
 
 public class LauncherException extends Exception {
 
@@ -6,6 +6,10 @@ public class LauncherException extends Exception {
 
     public LauncherException(String[] errorMessages) {
         this.errorMessages = errorMessages;
+    }
+
+    public LauncherException(String errorMessage) {
+        this.errorMessages = new String[]{errorMessage};
     }
 
     @Override
