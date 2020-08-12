@@ -59,7 +59,10 @@ public abstract class ALauncheur {
             if (!this.gameAssetsFolder.exists() && !this.gameAssetsFolder.mkdir())
                 throw new IOException("Impossible de créer le dossier des assets du jeu.");
             File indexesAssets = new File(this.getGameAssetsFolder(), "indexes");
+            File objectsAssets = new File(this.getGameAssetsFolder(), "objects");
             if (!indexesAssets.exists() && !indexesAssets.mkdir())
+                throw new IOException("Impossible de créer le dossier des indexes des assets du jeu.");
+            if (!objectsAssets.exists() && !objectsAssets.mkdir())
                 throw new IOException("Impossible de créer le dossier des indexes des assets du jeu.");
 
         } catch (IOException e) {
@@ -109,6 +112,7 @@ public abstract class ALauncheur {
 
     public List<FileDownload> downloadAssetsFiles() throws LauncherException {
         List<FileDownload> dls = new ArrayList<>();
+        File objectsFolder = new File(this.gameAssetsFolder, "objects");
 
         try {
             JsonElement jsonElement = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
@@ -125,36 +129,15 @@ public abstract class ALauncheur {
             JsonObject assetsObjects = Utils.getJsonResponseFromURL(urlAssets).getAsJsonObject().get("objects").getAsJsonObject();
             Set<String> assetsObjectsEntry = assetsObjects.keySet();
             for (String asset : assetsObjectsEntry) {
-                List<String> foldersName = new ArrayList<>();
-                String fileName;
-                char[] str = asset.toCharArray();
-
-                StringBuilder buffer = new StringBuilder();
-                for (int i = 0; i < str.length; ++i) {
-                    if (str[i] == '/') {
-                        if (buffer.length() < 1) continue;
-                        foldersName.add(buffer.toString());
-                        buffer.setLength(0);
-                    } else
-                        buffer.append(str[i]);
-                }
-                if (buffer.length() < 1)
-                    throw new LauncherException("Une interne est survenue.");
-                else
-                    fileName = buffer.toString();
-                File oldFolder = this.gameAssetsFolder;
-                for (String folderName : foldersName) {
-                    File folder = new File(oldFolder, folderName);
-                    if (!folder.exists() && !folder.mkdir())
-                        throw new LauncherException("Impossible de créer le dossier: " + folder.getPath());
-                    oldFolder = folder;
-                }
-
-                File assetFile = new File(oldFolder, fileName);
                 JsonObject assetObject = assetsObjects.get(asset).getAsJsonObject();
                 String hash = assetObject.get("hash").getAsString();
+                String subAsset = hash.substring(0, 2);
                 long size = assetObject.get("size").getAsLong();
-                String url = ALauncheur.RESSOURCE_URL + "/" + hash.substring(0, 2) + "/" + hash;
+                String url = ALauncheur.RESSOURCE_URL + "/" + subAsset + "/" + hash;
+                File obFolder = new File(objectsFolder, subAsset);
+                if (!obFolder.exists() && !obFolder.mkdir())
+                    throw new IOException("Impossible de créer un dossier d'asset");
+                File assetFile = new File(obFolder, hash);
                 if (fileNeedUpdate(assetFile, size))
                     dls.add(new FileDownload(url, assetFile.getPath()));
             }
