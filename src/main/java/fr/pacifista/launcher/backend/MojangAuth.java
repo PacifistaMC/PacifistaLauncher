@@ -20,10 +20,10 @@ public class MojangAuth {
     private static final String URL_MOJANG_AUTH = "https://authserver.mojang.com";
     private static final File authFile = new File(Pacifista.DATA_FOLDER, "login.json");
 
-    private final String accessToken;
-    private final String clientToken;
-    private final String userName;
-    private final String userUUID;
+    private String accessToken;
+    private String clientToken;
+    private String userName;
+    private String userUUID;
 
     private MojangAuth(final String email, final String password) throws LauncherException, IOException {
         InputStreamReader inputStream = null;
@@ -63,6 +63,91 @@ public class MojangAuth {
             try {
                 if (inputStream != null)
                     inputStream.close();
+                if (outputStream != null)
+                    outputStream.close();
+                if (connection != null)
+                    connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void refresh() throws LauncherException {
+        InputStreamReader inputStream = null;
+        OutputStream outputStream = null;
+        HttpURLConnection connection = null;
+
+        try {
+            URL url = new URL(URL_MOJANG_AUTH + "/refresh");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; " + StandardCharsets.UTF_8);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(true);
+
+            outputStream = connection.getOutputStream();
+            String jsonToSend = "{\"accessToken\": \"" + this.accessToken + "\", \"clientToken\": \"" + this.clientToken + "\", \"requestUser\": true}";
+            byte[] toSend = jsonToSend.getBytes(StandardCharsets.UTF_8);
+            outputStream.write(toSend, 0, toSend.length);
+
+            connection.connect();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new LauncherException(new String[] {
+                        "Une erreur est survenue lors de la connexion.",
+                        connection.getResponseMessage(),
+                });
+            }
+
+            inputStream = new InputStreamReader(connection.getInputStream());
+            JsonObject json = JsonParser.parseReader(inputStream).getAsJsonObject();
+            this.accessToken = json.get("accessToken").getAsString();
+            this.clientToken = json.get("clientToken").getAsString();
+            JsonObject selectedProfile = json.get("selectedProfile").getAsJsonObject();
+            this.userName = selectedProfile.get("name").getAsString();
+            this.userUUID = selectedProfile.get("id").getAsString();
+            saveLogins(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null)
+                    inputStream.close();
+                if (outputStream != null)
+                    outputStream.close();
+                if (connection != null)
+                    connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean validate() {
+        OutputStream outputStream = null;
+        HttpURLConnection connection = null;
+
+        try {
+            URL url = new URL(URL_MOJANG_AUTH + "/validate");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; " + StandardCharsets.UTF_8);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(true);
+
+            outputStream = connection.getOutputStream();
+            String jsonToSend = "{\"accessToken\": \"" + this.accessToken + "\", \"clientToken\": \"" + this.clientToken + "\"}";
+            byte[] toSend = jsonToSend.getBytes(StandardCharsets.UTF_8);
+            outputStream.write(toSend, 0, toSend.length);
+
+            connection.connect();
+
+            return connection.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
                 if (outputStream != null)
                     outputStream.close();
                 if (connection != null)
@@ -126,11 +211,15 @@ public class MojangAuth {
 
     public static MojangAuth login(final String email, final String password) throws LauncherException, IOException {
         MojangAuth mojangAuth = new MojangAuth(email, password);
+        saveLogins(mojangAuth);
+        return mojangAuth;
+    }
+
+    private static void saveLogins(MojangAuth mojangAuth) throws IOException {
         String json = "{\"accessToken\": \"" + mojangAuth.getAccessToken() + "\", " +
                 "\"clientToken\": \"" + mojangAuth.getClientToken() + "\", " +
                 "\"userName\": \"" + mojangAuth.getUserName() + "\", " +
                 "\"userUUID\": \"" + mojangAuth.getUserUUID() + "\"}";
         FileActions.writeInFile(authFile, json, false);
-        return mojangAuth;
     }
 }

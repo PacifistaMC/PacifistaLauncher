@@ -29,6 +29,8 @@ public class Main {
         this.mojangAuth = MojangAuth.login();
         if (this.mojangAuth == null && args.length == 2)
             this.mojangAuth = MojangAuth.login(args[0], args[1]);
+        if (!this.mojangAuth.validate() && args.length == 2)
+            this.mojangAuth = MojangAuth.login(args[0], args[1]);
 
         this.launcheurs = Arrays.asList(
                 new Pacifista()

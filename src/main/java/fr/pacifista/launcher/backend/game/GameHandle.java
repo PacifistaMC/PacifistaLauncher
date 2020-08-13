@@ -5,13 +5,13 @@ import fr.pacifista.launcher.backend.MojangAuth;
 import fr.pacifista.launcher.utils.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class GameHandle {
 
     public static GameJVM startGame(final ALauncheur launcheur, final MojangAuth mojangAuth) throws LauncherException {
+        mojangAuth.refresh();
         downloadGameLibs(launcheur);
         downloadAssets(launcheur);
         downloadClient(launcheur);
@@ -33,13 +33,13 @@ public class GameHandle {
 
         List<String> vmArgs = Arrays.asList(
                 "-Xms512M",
-                "-Xmx1024M",
+                "-Xmx2048M",
                 osFlag,
                 "-Djava.library.path=" + launcheur.getGameFolder().getPath(),
                 "-Dminecraft.launcher.brand=PacifistaLaucher"
         );
         List<String> gameArgs = Arrays.asList(
-                "--accessToken=" + mojangAuth.getClientToken(),
+                "--accessToken=" + mojangAuth.getAccessToken(),
                 "--version=" + launcheur.getGameVersion(),
                 "--username=" + mojangAuth.getUserName(),
                 "--gameDir=" + launcheur.getGameFolder().getPath(),
