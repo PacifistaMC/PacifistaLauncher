@@ -12,6 +12,7 @@ mvn package
 ```
 
 Un dossier target sera donc crée avec nos executables.
+
 Si vous êtes sur windows vous pouvez lancer le .exe sinon lancez le fichier java avec dépendances
 
 ## Lancement du launcheur
@@ -34,6 +35,7 @@ Veuillez vous assurer de mettre à jour les tests le cas échéant.
 
 ## Liens
 [Site web](https://pacifista.fr)
+
 [Créateur](https://twitter.com/funixgaming)
 
 ## License
