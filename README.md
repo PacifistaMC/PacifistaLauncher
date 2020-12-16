@@ -3,6 +3,7 @@ Voici le launcheur officiel de Pacifista (play.pacifista.fr)
 
 ## Installation
 Installez [Java](https://www.java.com/fr/download/) pour utiliser le launcheur
+
 Installez [Maven](https://maven.apache.org/install.html) pour compiler les sources et créer un executable
 
 Une fois toutes les dépendances installées allez dans le dossier du projet et entrez
