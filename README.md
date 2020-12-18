@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/FunixG/PacifistaLauncher/workflows/Java CI with Maven/badge.svg)](https://github.com/FunixG/PacifistaLauncher/actions)
+
 # PacifistaLauncheur
 Voici le launcheur officiel de Pacifista (play.pacifista.fr)
 
