@@ -1,11 +1,10 @@
-package fr.pacifista.launcher.backend.launch;
+package fr.pacifista.launcher.backend.launchers;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fr.pacifista.launcher.backend.MojangFile;
 import fr.pacifista.launcher.utils.FileDownload;
-import fr.pacifista.launcher.utils.LauncherException;
+import fr.pacifista.launcher.LauncherException;
 import fr.pacifista.launcher.utils.OsType;
 import fr.pacifista.launcher.utils.Utils;
 
@@ -66,10 +65,7 @@ public abstract class ALauncheur {
                 throw new IOException("Impossible de créer le dossier des indexes des assets du jeu.");
 
         } catch (IOException e) {
-            throw new LauncherException(new String[] {
-                    "Erreur lors de l'initialisation du launcheur.",
-                    "Erreur: " + e.getMessage()
-            });
+            throw new LauncherException(e.getMessage(), "err");
         }
     }
 
@@ -89,7 +85,7 @@ public abstract class ALauncheur {
                     osName = "natives-osx";
                     break;
                 default:
-                    throw new LauncherException("Votre os ne peut pas lancer Minecraft");
+                    throw new LauncherException("La version de votre OS (Système d'exploitation) n'est pas compatible avec Minecraft.", "err os");
             }
 
             JsonElement jsonElement = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
@@ -103,10 +99,7 @@ public abstract class ALauncheur {
             }
             return downloads;
         } catch (IOException e) {
-            throw new LauncherException(new String[] {
-                    "Erreur lors du téléchargement des librairies de Minecraft.",
-                    "Veuillez vérifier votre connexion."
-            });
+            throw new LauncherException("Une erreur est survenue lors du téléchargement de Minecraft. Veuillez réessayer plus tard.", e.getMessage());
         }
     }
 
@@ -144,10 +137,7 @@ public abstract class ALauncheur {
 
             return dls;
         } catch (IOException e) {
-            throw new LauncherException(new String[] {
-                    "Erreur lors du téléchargement des librairies de Minecraft.",
-                    "Message d'erreur: " + e.getMessage()
-            });
+            throw new LauncherException("Une erreur est survenue lors du téléchargement de Minecraft. Veuillez réessayer plus tard.", e.getMessage());
         }
     }
 
@@ -156,10 +146,7 @@ public abstract class ALauncheur {
             JsonElement json = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
             return json.getAsJsonObject().get("mainClass").getAsString();
         } catch (Exception e) {
-            throw new LauncherException(new String[] {
-                    "Erreur lors de la récupération d'informations sur Minecraft.",
-                    "Message d'erreur: " + e.getMessage()
-            });
+            throw new LauncherException("Une erreur est survenue lors du téléchargement de Minecraft. Veuillez réessayer plus tard.", e.getMessage());
         }
     }
 
@@ -175,10 +162,7 @@ public abstract class ALauncheur {
             else
                 return null;
         } catch (Exception e) {
-            throw new LauncherException(new String[] {
-                    "Erreur lors du téléchargement du jeu Minecraft.",
-                    "Message d'erreur: " + e.getMessage()
-            });
+            throw new LauncherException("Une erreur est survenue lors du téléchargement de Minecraft. Veuillez réessayer plus tard.", e.getMessage());
         }
     }
 
@@ -266,7 +250,7 @@ public abstract class ALauncheur {
                 return false;
             else {
                 if (!file.delete())
-                    throw new LauncherException(new String[] {"Impossible de supprimer un fichier: " + file.getName()});
+                    throw new LauncherException("Veuillez vérifier que le launcheur ait le droit d'écrire dans le dossier où il est.", "Impossible de supprimer un fichier: " + file.getName());
                 return true;
             }
         } else
