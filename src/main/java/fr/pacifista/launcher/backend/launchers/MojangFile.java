@@ -1,12 +1,12 @@
-package fr.pacifista.launcher.backend;
+package fr.pacifista.launcher.backend.launchers;
 
-public class MojangFile {
+class MojangFile {
 
     private final String downloadUrl;
     private final String fileName;
     private final long fileSize;
 
-    public MojangFile(final String downloadUrl, final long fileSize) {
+    MojangFile(final String downloadUrl, final long fileSize) {
         this.downloadUrl = downloadUrl;
         this.fileSize = fileSize;
         this.fileName = parseFileName(downloadUrl);

@@ -1,6 +1,7 @@
 package fr.pacifista.launcher.backend.game;
 
-import fr.pacifista.launcher.backend.launch.ALauncheur;
+import fr.pacifista.launcher.LauncherException;
+import fr.pacifista.launcher.backend.launchers.ALauncheur;
 import fr.pacifista.launcher.backend.MojangAuth;
 import fr.pacifista.launcher.utils.*;
 
@@ -28,7 +29,7 @@ public class GameHandle {
                 osFlag = "-XstartOnFirstThread";
                 break;
             default:
-                throw new LauncherException(new String[] {"Une erreur est survenue lors du lancement du jeu.", "Votre OS n'est pas supporté."});
+                throw new LauncherException("Une erreur est survenue lors du lancement du jeu. Votre OS n'est pas supporté.", "os err");
         }
 
         List<String> vmArgs = Arrays.asList(

@@ -1,6 +1,6 @@
 package fr.pacifista.launcher.backend.game;
 
-import fr.pacifista.launcher.utils.LauncherException;
+import fr.pacifista.launcher.LauncherException;
 import fr.pacifista.launcher.utils.StreamGobbler;
 
 import java.io.File;
@@ -30,10 +30,7 @@ public class GameJVM {
             errOut.start();
             normalOut.start();
         } catch (IOException e) {
-            throw new LauncherException(new String[] {
-                    "Une erreur est survenue lors du lancement de Minecraft.",
-                    "Message d'erreur: " + e.getMessage()
-            });
+            throw new LauncherException("Une erreur est survenue lors du lancement de Minecraft. Veuillez relancer le jeu.", e.getMessage());
         }
     }
 

@@ -2,9 +2,9 @@ package fr.pacifista.launcher.backend;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.pacifista.launcher.backend.launch.Pacifista;
+import fr.pacifista.launcher.backend.launchers.PacifistaLauncher;
 import fr.pacifista.launcher.utils.FileActions;
-import fr.pacifista.launcher.utils.LauncherException;
+import fr.pacifista.launcher.LauncherException;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +18,14 @@ import java.util.UUID;
 public class MojangAuth {
 
     private static final String URL_MOJANG_AUTH = "https://authserver.mojang.com";
-    private static final File authFile = new File(Pacifista.DATA_FOLDER, "login.json");
 
+    private final File authFile = new File(PacifistaLauncher.DATA_FOLDER, "login.json");
     private String accessToken;
     private String clientToken;
     private String userName;
     private String userUUID;
 
-    private MojangAuth(final String email, final String password) throws LauncherException, IOException {
+    public MojangAuth(final String email, final String password) throws LauncherException {
         InputStreamReader inputStream = null;
         OutputStream outputStream = null;
         HttpURLConnection connection = null;
@@ -46,10 +46,9 @@ public class MojangAuth {
             connection.connect();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new LauncherException(new String[] {
-                        "Une erreur est survenue lors de la connexion.",
-                        connection.getResponseMessage()
-                });
+                if (connection.getResponseMessage().equals("Invalid credentials."))
+                    throw new LauncherException("Vos identifiants ne sont pas valides, veuiller vérifier vos entrées.", connection.getResponseMessage());
+                throw new LauncherException("Une erreur est survenue lors de la connexion à mojang. Veuillez reessayer plus tard.", "HTTP reponse code: " + connection.getResponseCode() + " Message: " + connection.getResponseMessage());
             }
 
             inputStream = new InputStreamReader(connection.getInputStream());
@@ -59,6 +58,9 @@ public class MojangAuth {
             JsonObject selectedProfile = json.get("selectedProfile").getAsJsonObject();
             this.userName = selectedProfile.get("name").getAsString();
             this.userUUID = selectedProfile.get("id").getAsString();
+            this.saveLogins();
+        } catch (IOException e) {
+            throw new LauncherException("Une erreur est survenue lors de la connexion à mojang. Veuillez reessayer plus tard.", e.getMessage());
         } finally {
             try {
                 if (inputStream != null)
@@ -71,6 +73,15 @@ public class MojangAuth {
                 e.printStackTrace();
             }
         }
+    }
+
+    public MojangAuth() throws IOException {
+        JsonObject json = JsonParser.parseString(FileActions.getFileContent(authFile)).getAsJsonObject();
+
+        this.clientToken = json.get("clientToken").getAsString();
+        this.accessToken = json.get("accessToken").getAsString();
+        this.userUUID = json.get("userUUID").getAsString();
+        this.userName = json.get("userName").getAsString();
     }
 
     public void refresh() throws LauncherException {
@@ -94,10 +105,7 @@ public class MojangAuth {
             connection.connect();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new LauncherException(new String[] {
-                        "Une erreur est survenue lors de la connexion.",
-                        connection.getResponseMessage(),
-                });
+                throw new LauncherException("Une erreur est survenue lors de la connexion à mojang. Veuillez reessayer plus tard.", "HTTP reponse code: " + connection.getResponseCode() + " Message: " + connection.getResponseMessage());
             }
 
             inputStream = new InputStreamReader(connection.getInputStream());
@@ -107,9 +115,9 @@ public class MojangAuth {
             JsonObject selectedProfile = json.get("selectedProfile").getAsJsonObject();
             this.userName = selectedProfile.get("name").getAsString();
             this.userUUID = selectedProfile.get("id").getAsString();
-            saveLogins(this);
+            this.saveLogins();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LauncherException("Une erreur est survenue lors de la connexion à mojang. Veuillez reessayer plus tard.", e.getMessage());
         } finally {
             try {
                 if (inputStream != null)
@@ -124,7 +132,7 @@ public class MojangAuth {
         }
     }
 
-    public boolean validate() {
+    public void validate() throws LauncherException {
         OutputStream outputStream = null;
         HttpURLConnection connection = null;
 
@@ -143,9 +151,10 @@ public class MojangAuth {
 
             connection.connect();
 
-            return connection.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT;
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT)
+                this.refresh();
         } catch (IOException e) {
-            return false;
+            throw new LauncherException("Une erreur est survenue lors de la connexion à mojang. Veuillez reessayer plus tard.", e.getMessage());
         } finally {
             try {
                 if (outputStream != null)
@@ -158,18 +167,23 @@ public class MojangAuth {
         }
     }
 
-    private MojangAuth() throws IOException {
-        JsonObject json = JsonParser.parseString(FileActions.getFileContent(authFile)).getAsJsonObject();
-        this.clientToken = json.get("clientToken").getAsString();
-        this.accessToken = json.get("accessToken").getAsString();
-        this.userUUID = json.get("userUUID").getAsString();
-        this.userName = json.get("userName").getAsString();
+    private void saveLogins() throws LauncherException {
+        String json = "{\"accessToken\": \"" + this.accessToken + "\", " +
+                "\"clientToken\": \"" + this.clientToken + "\", " +
+                "\"userName\": \"" + this.userName + "\", " +
+                "\"userUUID\": \"" + this.userUUID + "\"}";
+
+        try {
+            FileActions.writeInFile(authFile, json, false);
+        } catch (IOException ioException) {
+            throw new LauncherException("Une erreur est survenue lors de l'enrengistrement de votre session de jeu. Veuillez recommencer.", ioException.getMessage());
+        }
     }
 
     private String getClientTokenLauncher() throws LauncherException {
         try {
             String uuid;
-            File tokenFile = new File(Pacifista.DATA_FOLDER, "clientToken.txt");
+            File tokenFile = new File(PacifistaLauncher.DATA_FOLDER, "clientToken.txt");
             if (!tokenFile.exists()) {
                 if (!tokenFile.createNewFile())
                     throw new IOException();
@@ -179,19 +193,12 @@ public class MojangAuth {
                 uuid = FileActions.getFileContent(tokenFile);
             return uuid;
         } catch (IOException e) {
-            throw new LauncherException(new String[] {
-                    "Une erreur est survenue lors de a génération du token client.",
-                    "Message d'erreur: " + e.getMessage()
-            });
+            throw new LauncherException("Une errur est survenue lors la génération de votre identifiant launcheur, veuillez recommencer et vérifier que le launcheur possède les droits d'écriture.", e.getMessage());
         }
     }
 
     public String getAccessToken() {
         return accessToken;
-    }
-
-    public String getClientToken() {
-        return clientToken;
     }
 
     public String getUserName() {
@@ -200,26 +207,5 @@ public class MojangAuth {
 
     public String getUserUUID() {
         return userUUID;
-    }
-
-    public static MojangAuth login() throws IOException {
-        if (authFile.exists()) {
-            return new MojangAuth();
-        } else
-            return null;
-    }
-
-    public static MojangAuth login(final String email, final String password) throws LauncherException, IOException {
-        MojangAuth mojangAuth = new MojangAuth(email, password);
-        saveLogins(mojangAuth);
-        return mojangAuth;
-    }
-
-    private static void saveLogins(MojangAuth mojangAuth) throws IOException {
-        String json = "{\"accessToken\": \"" + mojangAuth.getAccessToken() + "\", " +
-                "\"clientToken\": \"" + mojangAuth.getClientToken() + "\", " +
-                "\"userName\": \"" + mojangAuth.getUserName() + "\", " +
-                "\"userUUID\": \"" + mojangAuth.getUserUUID() + "\"}";
-        FileActions.writeInFile(authFile, json, false);
     }
 }
