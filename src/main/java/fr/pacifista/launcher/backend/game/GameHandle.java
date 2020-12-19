@@ -3,20 +3,19 @@ package fr.pacifista.launcher.backend.game;
 import fr.pacifista.launcher.LauncherException;
 import fr.pacifista.launcher.backend.launchers.ALauncheur;
 import fr.pacifista.launcher.backend.MojangAuth;
+import fr.pacifista.launcher.backend.launchers.GameJVM;
 import fr.pacifista.launcher.utils.*;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 public class GameHandle {
 
-    public static GameJVM startGame(final ALauncheur launcheur, final MojangAuth mojangAuth) throws LauncherException {
+    /*public static GameJVM startGame(final ALauncheur launcheur, final MojangAuth mojangAuth) throws LauncherException {
         mojangAuth.refresh();
         downloadGameLibs(launcheur);
         downloadAssets(launcheur);
         downloadClient(launcheur);
-        String mainClass = launcheur.getMinecraftMainClass();
+        /*String mainClass = launcheur.getMinecraftMainClass();
         String osFlag;
         switch (launcheur.getOsType()) {
             case WINDOWS:
@@ -80,7 +79,7 @@ public class GameHandle {
             throw new LauncherException(new String[] {
                     "Une erreur est survenue lors du téléchargements des fichiers du jeu."
             });
-        }*/
+        }
     }
 
     private static void downloadClient(ALauncheur launcheur) throws LauncherException {
@@ -90,7 +89,6 @@ public class GameHandle {
     }
 
     private static void startDownload(final FileDownload fileDownload) {
-        System.out.println("New DL");
         fileDownload.start();
         int progression = 0;
         while (!fileDownload.isDownloadDone() && fileDownload.isAlive() && !fileDownload.isInterrupted()) {
@@ -99,6 +97,6 @@ public class GameHandle {
                 System.out.println(progression + "%");
             }
         }
-    }
+    }*/
 
 }

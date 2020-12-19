@@ -45,9 +45,9 @@ public class MojangAuth {
 
             connection.connect();
 
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                if (connection.getResponseMessage().equals("Invalid credentials."))
-                    throw new LauncherException("Vos identifiants ne sont pas valides, veuiller vérifier vos entrées.", connection.getResponseMessage());
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN) {
+                throw new LauncherException("Vos identifiants ne sont pas valides, veuiller vérifier vos entrées.", connection.getResponseMessage());
+            } else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 throw new LauncherException("Une erreur est survenue lors de la connexion à mojang. Veuillez reessayer plus tard.", "HTTP reponse code: " + connection.getResponseCode() + " Message: " + connection.getResponseMessage());
             }
 
@@ -84,7 +84,7 @@ public class MojangAuth {
         this.userName = json.get("userName").getAsString();
     }
 
-    public void refresh() throws LauncherException {
+    private void refresh() throws LauncherException {
         InputStreamReader inputStream = null;
         OutputStream outputStream = null;
         HttpURLConnection connection = null;

@@ -1,8 +1,10 @@
 package fr.pacifista.launcher;
 
 import fr.pacifista.launcher.backend.MojangAuth;
-import fr.pacifista.launcher.backend.game.GameJVM;
+import fr.pacifista.launcher.backend.launchers.GameJVM;
 import fr.pacifista.launcher.backend.launchers.ALauncheur;
+import fr.pacifista.launcher.backend.launchers.Launchers;
+import fr.pacifista.launcher.backend.launchers.PacifistaLauncher;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -27,6 +29,11 @@ public class Main {
 
         try {
             this.mojangAuth = new MojangAuth();
+            this.mojangAuth.validate();
+
+            PacifistaLauncher launcher = Launchers.getPacifistaLauncher();
+            launcher.downloadRequiredFiles();
+            this.gameJVM = launcher.startGame(mojangAuth, "2024M");
         } catch (IOException e) {
             //TODO Need credentials
             throw new LauncherException("User not logged", e.getMessage());

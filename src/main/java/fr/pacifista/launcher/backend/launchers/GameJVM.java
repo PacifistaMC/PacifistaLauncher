@@ -1,4 +1,4 @@
-package fr.pacifista.launcher.backend.game;
+package fr.pacifista.launcher.backend.launchers;
 
 import fr.pacifista.launcher.LauncherException;
 import fr.pacifista.launcher.utils.StreamGobbler;

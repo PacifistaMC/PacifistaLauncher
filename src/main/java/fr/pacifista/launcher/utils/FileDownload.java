@@ -1,5 +1,7 @@
 package fr.pacifista.launcher.utils;
 
+import fr.pacifista.launcher.LauncherException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -24,7 +26,7 @@ public class FileDownload extends Thread {
     }
 
     @Override
-    public void run() {
+    public void start() {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         HttpURLConnection connection = null;
@@ -59,7 +61,8 @@ public class FileDownload extends Thread {
             }
             this.downloadDone = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            final LauncherException launcherException = new LauncherException("Une erreur est survenue lors du téléchargement. Veuillez recommancer.", e.getMessage());
+            launcherException.printStackTrace();
         } finally {
             try {
                 if (inputStream != null)

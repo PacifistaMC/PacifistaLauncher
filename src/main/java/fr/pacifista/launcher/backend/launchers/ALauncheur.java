@@ -3,6 +3,7 @@ package fr.pacifista.launcher.backend.launchers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fr.pacifista.launcher.backend.MojangAuth;
 import fr.pacifista.launcher.utils.FileDownload;
 import fr.pacifista.launcher.LauncherException;
 import fr.pacifista.launcher.utils.OsType;
@@ -10,10 +11,7 @@ import fr.pacifista.launcher.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class ALauncheur {
 
@@ -29,6 +27,9 @@ public abstract class ALauncheur {
     private final String metaUrlGameVersion;
     private final String assetsIndexVersion;
     private final OsType osType;
+
+    private final List<FileDownload> downloadQueue = new ArrayList<>();
+    private FileDownload fileDownloading = null;
 
     ALauncheur(final String minecraftName, final String gameVersion) throws LauncherException {
         try {
@@ -57,8 +58,8 @@ public abstract class ALauncheur {
                 throw new IOException("Impossible de créer le dossier des librairies du jeu.");
             if (!this.gameAssetsFolder.exists() && !this.gameAssetsFolder.mkdir())
                 throw new IOException("Impossible de créer le dossier des assets du jeu.");
-            File indexesAssets = new File(this.getGameAssetsFolder(), "indexes");
-            File objectsAssets = new File(this.getGameAssetsFolder(), "objects");
+            File indexesAssets = new File(this.gameAssetsFolder, "indexes");
+            File objectsAssets = new File(this.gameAssetsFolder, "objects");
             if (!indexesAssets.exists() && !indexesAssets.mkdir())
                 throw new IOException("Impossible de créer le dossier des indexes des assets du jeu.");
             if (!objectsAssets.exists() && !objectsAssets.mkdir())
@@ -69,12 +70,12 @@ public abstract class ALauncheur {
         }
     }
 
-    public List<FileDownload> downloadGameLibs() throws LauncherException {
+    private List<FileDownload> downloadGameLibs() throws LauncherException {
         List<FileDownload> downloads = new ArrayList<>();
 
         try {
             String osName;
-            switch (this.getOsType()) {
+            switch (this.osType) {
                 case WINDOWS:
                     osName = "natives-windows";
                     break;
@@ -88,7 +89,7 @@ public abstract class ALauncheur {
                     throw new LauncherException("La version de votre OS (Système d'exploitation) n'est pas compatible avec Minecraft.", "err os");
             }
 
-            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
+            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
             JsonObject json = jsonElement.getAsJsonObject();
             JsonArray jsonLibs = json.get("libraries").getAsJsonArray();
             for (int i = 0; i < jsonLibs.size(); ++i) {
@@ -103,18 +104,18 @@ public abstract class ALauncheur {
         }
     }
 
-    public List<FileDownload> downloadAssetsFiles() throws LauncherException {
+    private List<FileDownload> downloadAssetsFiles() throws LauncherException {
         List<FileDownload> dls = new ArrayList<>();
         File objectsFolder = new File(this.gameAssetsFolder, "objects");
 
         try {
-            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
+            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
             JsonObject json = jsonElement.getAsJsonObject();
 
             JsonObject assetIndex = json.get("assetIndex").getAsJsonObject();
             String urlAssets = assetIndex.get("url").getAsString();
             MojangFile assetJSONFile = new MojangFile(urlAssets, assetIndex.get("size").getAsLong());
-            File indexes = new File(this.getGameAssetsFolder(), "indexes");
+            File indexes = new File(this.gameAssetsFolder, "indexes");
             File fileToStore = new File(indexes, assetJSONFile.getFileName());
             if (fileNeedUpdate(fileToStore, assetJSONFile.getFileSize()))
                 dls.add(new FileDownload(assetJSONFile.getDownloadUrl(), fileToStore.getPath()));
@@ -141,22 +142,22 @@ public abstract class ALauncheur {
         }
     }
 
-    public String getMinecraftMainClass() throws LauncherException {
+    private String getMinecraftMainClass() throws LauncherException {
         try {
-            JsonElement json = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
+            JsonElement json = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
             return json.getAsJsonObject().get("mainClass").getAsString();
         } catch (Exception e) {
             throw new LauncherException("Une erreur est survenue lors du téléchargement de Minecraft. Veuillez réessayer plus tard.", e.getMessage());
         }
     }
 
-    public FileDownload downloadClient() throws LauncherException {
+    private FileDownload downloadClient() throws LauncherException {
         try {
-            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.getMetaUrlGameVersion());
+            JsonElement jsonElement = Utils.getJsonResponseFromURL(this.metaUrlGameVersion);
             JsonObject json = jsonElement.getAsJsonObject();
             JsonObject client = json.get("downloads").getAsJsonObject().get("client").getAsJsonObject();
             MojangFile clientUrl = new MojangFile(client.get("url").getAsString(), client.get("size").getAsLong());
-            File clientFile = new File(this.getGameFolder(), clientUrl.getFileName());
+            File clientFile = new File(this.gameFolder, clientUrl.getFileName());
             if (fileNeedUpdate(clientFile, clientUrl.getFileSize()))
                 return new FileDownload(clientUrl.getDownloadUrl(), clientFile.getPath());
             else
@@ -177,7 +178,7 @@ public abstract class ALauncheur {
         if (classDL == null) return Collections.emptyList();
         JsonObject lib = classDL.getAsJsonObject();
         MojangFile mojangFile = new MojangFile(lib.get("url").getAsString(), lib.get("size").getAsLong());
-        File libFile = new File(this.getGameLibsFolder(), mojangFile.getFileName());
+        File libFile = new File(this.gameLibsFolder, mojangFile.getFileName());
         if (fileNeedUpdate(libFile, mojangFile.getFileSize()))
             downloadsElems.add(new FileDownload(mojangFile.getDownloadUrl(), libFile.getPath()));
         return downloadsElems;
@@ -257,31 +258,80 @@ public abstract class ALauncheur {
             return true;
     }
 
-    public File getGameAssetsFolder() {
-        return gameAssetsFolder;
-    }
-
     public File getGameFolder() {
         return gameFolder;
     }
 
-    public File getGameLibsFolder() {
-        return gameLibsFolder;
+    public void addDownloadToQueue(final FileDownload fileDownload) {
+        this.downloadQueue.add(fileDownload);
     }
 
-    public String getGameVersion() {
-        return gameVersion;
+    public void downloadRequiredFiles() throws LauncherException {
+        System.out.println("Starting update of Minecraft files...");
+
+        this.downloadQueue.addAll(this.downloadGameLibs());
+        this.downloadQueue.addAll(this.downloadAssetsFiles());
+
+        FileDownload client = this.downloadClient();
+        if (client != null)
+            this.downloadQueue.add(client);
+
+        for (FileDownload fileDownload : this.downloadQueue) {
+            this.fileDownloading = fileDownload;
+            this.fileDownloading.start();
+        }
     }
 
-    public OsType getOsType() {
-        return osType;
+    private boolean downloadDone() {
+        for (FileDownload file : this.downloadQueue) {
+            if (!file.isDownloadDone()) {
+                return false;
+            }
+        }
+        System.out.println("Update done !");
+        return true;
     }
 
-    public String getMetaUrlGameVersion() {
-        return metaUrlGameVersion;
-    }
+    public GameJVM startGame(final MojangAuth mojangAuth, final String maxRam) throws LauncherException {
+        while (!downloadDone());
 
-    public String getAssetsIndexVersion() {
-        return assetsIndexVersion;
+        String mainClass = this.getMinecraftMainClass();
+        String osFlag;
+        switch (this.osType) {
+            case WINDOWS:
+                osFlag = "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump";
+                break;
+            case LINUX:
+                osFlag = "-Xss1M";
+                break;
+            case MAC_OS:
+                osFlag = "-XstartOnFirstThread";
+                break;
+            default:
+                throw new LauncherException("Une erreur est survenue lors du lancement du jeu. Votre OS n'est pas supporté.", "os err");
+        }
+
+        List<String> vmArgs = Arrays.asList(
+                "-Xms512M",
+                "-Xmx" + maxRam,
+                osFlag,
+                "-Djava.library.path=" + this.gameFolder.getPath(),
+                "-Dminecraft.launcher.brand=Pacifista"
+        );
+        List<String> gameArgs = Arrays.asList(
+                "--accessToken=" + mojangAuth.getAccessToken(),
+                "--version=" + this.gameVersion,
+                "--username=" + mojangAuth.getUserName(),
+                "--gameDir=" + this.gameFolder.getPath(),
+                "--assetsDir=" + this.gameAssetsFolder.getPath(),
+                "--assetIndex=" + this.assetsIndexVersion,
+                "--uuid=" + mojangAuth.getUserUUID(),
+                "--userType=mojang"
+        );
+        String classPath = this.gameFolder.getPath() + File.separator +
+                "client.jar" + (this.osType.equals(OsType.WINDOWS) ? ';' : ':') +
+                this.gameLibsFolder.getPath() + File.separator + "*";
+
+        return new GameJVM(vmArgs, mainClass, gameArgs, classPath);
     }
 }
