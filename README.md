@@ -1,5 +1,7 @@
 [![Build Actions Status](https://github.com/FunixG/PacifistaLauncher/workflows/maven-package/badge.svg)](https://github.com/FunixG/PacifistaLauncher/actions)
 
+# PROJET NON MAINTENU / EN PAUSE
+
 # PacifistaLauncheur
 Voici le launcheur officiel de Pacifista (play.pacifista.fr)
 
