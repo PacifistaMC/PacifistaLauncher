@@ -58,3 +58,7 @@ ipcMain.handle(OPCODES.GET_CONFIG, () => {
   const config = configManager.getConfig();
   return config;
 });
+
+ipcMain.on(OPCODES.SET_CONFIG, (_event, newConfig) => {
+  configManager.setConfig(JSON.parse(newConfig));
+});

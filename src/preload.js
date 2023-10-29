@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld("bridge", {
   switchView: (view) =>
     ipcRenderer.send(ipcConstants.OPCODES.SWITCH_VIEW, view),
   getConfig: () => ipcRenderer.invoke(ipcConstants.OPCODES.GET_CONFIG),
+  setConfig: (newConfig) => ipcRenderer.send(ipcConstants.OPCODES.SET_CONFIG, newConfig),
   play: () => ipcRenderer.send(ipcConstants.OPCODES.PLAY),
 });

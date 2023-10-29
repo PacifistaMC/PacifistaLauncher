@@ -70,7 +70,7 @@ function getAbsoluteMaxRAM() {
  * Save the configuration to a file.
  */
 exports.save = function () {
-  fs.writeFileSync(configPath, JSON.stringify(config, null, 4), { encoding: "utf-8" });
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2), { encoding: "utf-8" });
 }
 
 /**
@@ -130,6 +130,7 @@ exports.getConfig = function () {
  */
 exports.setConfig = function (newConfig) {
   config = newConfig;
+  exports.save();
 }
 
 /**
