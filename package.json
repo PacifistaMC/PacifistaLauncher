@@ -6,8 +6,7 @@
   "scripts": {
     "start": "electron .",
     "buildW": "electron-builder build -w",
-    "buildM": "electron-builder build -m",
-    "buildL": "electron-builder build -l"
+    "buildM": "electron-builder build -m"
   },
   "repository": {
     "type": "git",
