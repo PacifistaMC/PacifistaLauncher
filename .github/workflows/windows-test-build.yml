@@ -5,9 +5,9 @@ name: npm-buildW
 
 on:
   push:
-    branches: [ master, refacto/electron_launcher ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, refacto/electron_launcher ]
+    branches: [ master ]
 
 jobs:
   build:
