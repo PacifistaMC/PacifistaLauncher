@@ -9,7 +9,6 @@ body {
   width: 100px;
   height: 100px;
   background-color: #444;
-  background-image: url("default-avatar.jpg");
   background-size: cover;
   border: 2px solid var(--primary-color);
   border-radius: 50%;
