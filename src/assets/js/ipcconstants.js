@@ -26,4 +26,5 @@ exports.ERRORS = {
 exports.VIEWS = {
   INDEX: "pages/index.html",
   APP: "pages/app.html",
+  SETTINGS: "pages/settings.html",
 };

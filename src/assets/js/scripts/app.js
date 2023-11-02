@@ -1,4 +1,5 @@
 window.onload = async function () {
+  const { VIEWS } = window.bridge.ipcConstants;
   const config = await window.bridge.getConfig();
   const user = config.authenticationDatabase[config.selectedAccount];
 
@@ -12,5 +13,9 @@ window.onload = async function () {
 
   play.addEventListener("click", () => {
     window.bridge.play();
+  });
+
+  settings.addEventListener("click", () => {
+    window.bridge.switchView(VIEWS.SETTINGS);
   });
 }

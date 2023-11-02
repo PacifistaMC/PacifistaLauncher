@@ -1,0 +1,168 @@
+body {
+  height: 100vh;
+  justify-content: center;
+}
+
+.settings-container {
+  background-color: var(--secondary-color);
+  border-radius: 25px;
+  display: flex;
+  height: 25rem;
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.minecraft-settings {
+  flex: 1;
+  max-width: 50%;
+}
+
+.account-settings {
+  flex: 1;
+  max-width: 50%;
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.setting {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.resolution-input {
+  display: flex;
+  align-items: center;
+}
+
+.resolution-input input {
+  border-radius: 5px;
+  border: none;
+  width: 50px;
+  padding: 5px;
+}
+
+.separator {
+  margin: 0 10px;
+}
+
+.switch {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #009688;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.ram-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.ram-input input[type="range"] {
+  width: 100%;
+}
+
+#allocated-ram-value {
+  font-weight: 600;
+}
+
+.user-card {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-height: 10rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.user-avatar {
+  width: 3rem;
+  height: 3rem;
+  background-color: #444;
+  background-size: cover;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  margin: 2px auto;
+}
+
+.user-details {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.username {
+  font-weight: 600;
+}
+
+.user-uuid {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.microsoft-logo {
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
+
+.btn-container {
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  position: relative;
+}
