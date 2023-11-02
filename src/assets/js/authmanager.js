@@ -11,7 +11,12 @@ exports.addMicrosoftAccount = async function (code) {
 
   if (response.success) {
     const account = response.data;
-    configManager.addAuthAccount(account);
+    const config = configManager.getConfig();
+
+    config.selectedAccount = account.minecraft.uuid;
+    config.authenticationDatabase[account.minecraft.uuid] = account;
+    configManager.setConfig(config);
+
     return response;
   }
 
