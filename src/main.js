@@ -27,6 +27,8 @@ function createWindow() {
   mainWindow.loadURL(path.join(__dirname, pagePath));
 }
 
+app.disableHardwareAcceleration();
+
 app.whenReady().then(() => {
   createWindow();
 
