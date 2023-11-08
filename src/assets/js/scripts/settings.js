@@ -3,9 +3,9 @@ window.onload = async function () {
   let config = await window.bridge.getConfig();
 
   const selectedAccount = config.authenticationDatabase[config.selectedAccount];
-  document.getElementById('username').innerHTML = selectedAccount.minecraft.username;
-  document.getElementById('user-avatar').style.backgroundImage = `url('https://mc-heads.net/body/${selectedAccount.minecraft.uuid}/right')`;
-  document.getElementById('uuid').innerHTML = selectedAccount.minecraft.uuid;
+  document.getElementById('username').innerHTML = selectedAccount.name;
+  document.getElementById('user-avatar').style.backgroundImage = `url('https://mc-heads.net/body/${selectedAccount.uuid}/right')`;
+  document.getElementById('uuid').innerHTML = `UUID: ${selectedAccount.uuid}`;
 
   document.getElementById('resolution-width').value = config.settings.game.resWidth;
   document.getElementById('resolution-height').value = config.settings.game.resHeight;
@@ -19,9 +19,8 @@ window.onload = async function () {
   allocatedRam.value = config.javaConfig.minRAM;
   document.getElementById('total-ram').innerHTML = `RAM totale: ${config.javaConfig.maxRAM} GB`;
 
-  allocatedRam.addEventListener('input', (event, value) => {
-    console.log(event, value);
-    document.getElementById('allocated-ram-value').innerHTML = `${value} GB`;
+  allocatedRam.addEventListener('input', () => {
+    document.getElementById('allocated-ram-value').innerHTML = `${allocatedRam.value} GB`;
   });
 
   document.getElementById("save-btn").addEventListener("click", () => {

@@ -14,6 +14,7 @@ const dataPath = path.join(sysRoot, ".pacifistalauncher");
 const launcherDir = app.getPath("userData");
 const configPath = path.join(launcherDir, "config.json");
 const firstLaunch = !fs.existsSync(configPath);
+const instancesDir = path.join(dataPath, "instances");
 
 if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
 
@@ -40,16 +41,18 @@ const DEFAULT_CONFIG = {
   javaConfig: {
     minRAM: getAbsoluteMinRAM(),
     maxRAM: getAbsoluteMaxRAM(),
+    allocatedRAM: getAbsoluteMinRAM(),
     executable: "",
     jvmOptions: [],
   },
+  server: {
+    host: "play.pacifista.fr",
+    version: "1.20.1",
+    type: "release",
+    instanceDir: instancesDir,
+  }
 };
 
-/**
- * Get the absolute minimum RAM required for JVM initialization.
- *
- * @returns {number} The absolute minimum RAM in GB.
- */
 function getAbsoluteMinRAM() {
   const mem = os.totalmem();
   if (mem >= 8 * 1073741824) return 4;
@@ -57,25 +60,15 @@ function getAbsoluteMinRAM() {
   else return 2;
 };
 
-/**
- * Get the absolute maximum RAM available for JVM initialization.
- *
- * @returns {number} The absolute maximum RAM in GB.
- */
 function getAbsoluteMaxRAM() {
-  return os.totalmem() / 1073741824;
+  const fullRam = os.totalmem() / 1073741824;
+  return Math.round((fullRam + Number.EPSILON) * 100) / 100;
 };
 
-/**
- * Save the configuration to a file.
- */
 exports.save = function () {
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2), { encoding: "utf-8" });
-}
+};
 
-/**
- * Load the configuration from a file.
- */
 exports.load = function () {
   let doLoad = true;
 
@@ -106,28 +99,14 @@ exports.load = function () {
   logger.info("Successfully Loaded");
 };
 
-/**
- * Check if this is the first launch of the application.
- *
- * @returns {boolean} `true` if it's the first launch, `false` otherwise.
- */
 exports.isFirstLaunch = function () {
   return firstLaunch;
 };
 
-/**
- * Get the current configuration.
- *
- * @returns {Object} The current configuration.
- */
 exports.getConfig = function () {
   return config;
 };
 
-/**
- * Update the configuration.
- * @param {Object} newConfig The new configuration.
- */
 exports.setConfig = function (newConfig) {
   config = newConfig;
   exports.save();
@@ -159,22 +138,17 @@ function validateKeySet(srcObj, destObj) {
     }
   }
   return destObj;
-}
-
-/**
- * Get the data directory.
- *
- * @returns {string} The data directory path.
- */
-exports.getDataDirectory = function () {
-  return dataPath;
 };
 
-/**
- * Get the instance directory.
- *
- * @returns {string} The instance directory path.
- */
-exports.getInstanceDirectory = function () {
-  return path.join(exports.getDataDirectory(), "instances");
+exports.getDirectories = function () {
+  return {
+    data: dataPath,
+    instances: ensureDirectory(),
+    launcher: launcherDir
+  }
+};
+
+function ensureDirectory(directory) {
+  if (!fs.existsSync(directory)) fs.mkdirSync(directory);
+  return directory;
 };

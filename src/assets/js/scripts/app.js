@@ -7,9 +7,10 @@ window.onload = async function () {
   const pseudo = document.getElementById("pseudo");
   const settings = document.getElementById("settings");
   const play = document.getElementById("play");
+  const logout = document.getElementById("logout");
 
-  avatar.style.backgroundImage = `url('https://mc-heads.net/body/${user.minecraft.uuid}/right')`;
-  pseudo.innerHTML = user.minecraft.username;
+  avatar.style.backgroundImage = `url('https://mc-heads.net/body/${user.uuid}/right')`;
+  pseudo.innerHTML = user.name;
 
   play.addEventListener("click", () => {
     window.bridge.play();
@@ -17,5 +18,9 @@ window.onload = async function () {
 
   settings.addEventListener("click", () => {
     window.bridge.switchView(VIEWS.SETTINGS);
+  });
+
+  logout.addEventListener("click", () => {
+    window.bridge.logout();
   });
 }
