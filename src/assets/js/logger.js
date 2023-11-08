@@ -15,6 +15,6 @@ exports.getLogger = function (label) {
         }`;
       })
     ),
-    transports: [new transports.Console()],
+    transports: [new transports.Console({ level: 'debug' })],
   });
 };
