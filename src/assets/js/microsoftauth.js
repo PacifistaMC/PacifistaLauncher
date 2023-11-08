@@ -1,13 +1,13 @@
-const { BrowserWindow } = require("electron");
+const { BrowserWindow, ipcMain } = require("electron");
 const { AZURE_CLIENT_ID, REPLY_TYPES, ERRORS } = require("./ipcconstants");
-const authManager = require("./authmanager");
+const { addMicrosoftAccount, removeMicrosoftAccount } = require('./authmanager');
 
 const REDIRECT_URI_PREFIX =
   "https://login.microsoftonline.com/common/oauth2/nativeclient?";
 
 let msftAuthWindow;
 let msftAuthSuccess;
-exports.handleLogin = function (APP_ICON_PATH) {
+exports.handleLogin = async function (APP_ICON_PATH) {
   return new Promise((resolve) => {
     if (msftAuthWindow) {
       resolve({
@@ -38,21 +38,12 @@ exports.handleLogin = function (APP_ICON_PATH) {
       }
     });
 
-    msftAuthWindow.webContents.on("did-navigate", (_, uri) => {
+    msftAuthWindow.webContents.on("did-navigate", async (_, uri) => {
       if (uri.startsWith(REDIRECT_URI_PREFIX)) {
-        let queries = uri
-          .substring(REDIRECT_URI_PREFIX.length)
-          .split("#", 1)
-          .toString()
-          .split("&");
-        let queryMap = {};
+        const url = new URL(uri);
+        const code = url.searchParams.get('code');
 
-        queries.forEach((query) => {
-          const [name, value] = query.split("=");
-          queryMap[name] = decodeURI(value);
-        });
-
-        authManager.addMicrosoftAccount(queryMap.code).then((response) => {
+        addMicrosoftAccount(code).then((response) => {
           if (response.success) {
             resolve({ reply_type: REPLY_TYPES.SUCCESS });
           } else {
@@ -119,11 +110,9 @@ exports.handleLogout = function (APP_ICON_PATH) {
     });
 
     msftLogoutWindow.webContents.on("did-navigate", (_, uri) => {
-      if (
-        uri.startsWith(
-          "https://login.microsoftonline.com/common/oauth2/v2.0/logoutsession"
-        )
-      ) {
+      const logoutUri = "https://login.microsoftonline.com/common/oauth2/v2.0/logoutsession";
+      if (uri.startsWith(logoutUri)) {
+        removeMicrosoftAccount();
         msftLogoutSuccess = true;
         setTimeout(() => {
           if (!msftLogoutSuccessSent) {

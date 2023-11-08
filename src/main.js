@@ -3,6 +3,7 @@ const { app, ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
 const { handleLogin, handleLogout } = require("./assets/js/microsoftauth");
 const configManager = require("./assets/js/configmanager");
+const { refreshAccount } = require('./assets/js/authmanager');
 
 configManager.load();
 
@@ -23,8 +24,17 @@ function createWindow() {
     },
   });
 
-  const pagePath = configManager.isFirstLaunch() ? "pages/welcome.html" : "pages/index.html";
-  mainWindow.loadURL(path.join(__dirname, pagePath));
+  let pagePath;
+
+  if (configManager.isFirstLaunch()) pagePath = "pages/welcome.html";
+  else {
+    refreshAccount().then((success) => {
+      if (success) pagePath = "pages/app.html";
+      else pagePath = "pages/index.html";
+
+      mainWindow.loadURL(path.join(__dirname, pagePath));
+    });
+  }
 }
 
 app.disableHardwareAcceleration();

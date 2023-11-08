@@ -1,59 +1,75 @@
-const axios = require("axios");
 const { ipcMain } = require("electron");
-const { OPCODES, VIEWS } = require("./ipcconstants");
+const { AZURE_CLIENT_ID, OPCODES, VIEWS } = require("./ipcconstants");
+const { Auth, assets } = require('msmc');
 const { getLogger } = require("./logger");
 const configManager = require("./configmanager");
 
-const logger = getLogger("Auth Manager");
+const logger = getLogger("Microsoft Authenticator");
+
+const auth = new Auth({
+  client_id: AZURE_CLIENT_ID,
+  redirect: 'https://login.microsoftonline.com/common/oauth2/nativeclient'
+});
+
+auth.on('load', (_id, info) => {
+  logger.info(info);
+});
 
 exports.addMicrosoftAccount = async function (code) {
-  const response = await getAccount(code);
+  const config = configManager.getConfig();
 
-  if (response.success) {
-    const account = response.data;
-    const config = configManager.getConfig();
-
-    config.selectedAccount = account.minecraft.uuid;
-    config.authenticationDatabase[account.minecraft.uuid] = account;
-    configManager.setConfig(config);
-
-    return response;
+  try {
+    const xboxData = await auth.login(code);
+    await saveUserData(xboxData);
+  } catch (err) {
+    const errMsg = assets.lexicon[err] ?? "Erreur inconnue lors de la connexion.";
+    logger.error(errMsg);
+    return { success: false, error: errMsg };
   }
 
-  return { success: response.success, error: response.error };
+  configManager.setConfig(config);
+  ipcMain.emit(OPCODES.SWITCH_VIEW, VIEWS.APP);
+
+  return { success: true };
 }
 
-async function getAccount(code) {
-  const defaultErrorMessage = "Erreur inconnue lors de la requête à l'API.";
-  let errorMessage = "";
+exports.removeMicrosoftAccount = function () {
+  const config = configManager.getConfig();
 
-  const response = await axios
-    .get(
-      `https://funixproddevpcftalauncherimpl.gamecreep35.repl.co/authflow?code=${code}`
-    )
-    .catch((err) => {
-      if (err instanceof axios.AxiosError) {
-        errorMessage = `Erreur inconnue lors de la requête à l'API. Status: ${err.status}, Cause: "${err.cause}", Message: "${err.message}".`;
-      } else {
-        errorMessage = defaultErrorMessage;
-      }
-    });
+  delete config.authenticationDatabase[config.selectedAccount];
+  config.selectedAccount = null;
 
-  if (!response)
-    return { success: false, error: errorMessage || defaultErrorMessage };
+  configManager.setConfig(config);
+  ipcMain.emit(OPCODES.SWITCH_VIEW, VIEWS.INDEX);
 
-  if (!response.data.success) {
-    errorMessage = response.data.error ?? defaultErrorMessage;
+  return { success: true };
+}
+
+exports.refreshAccount = async function () {
+  const config = configManager.getConfig();
+
+  if (!config.selectedAccount) return false;
+  const user = config.authenticationDatabase[config.selectedAccount];
+
+  try {
+    await auth.refresh(user.meta.refresh);
+  } catch (err) {
+    logger.error("Impossible de reconnecter le compte enregistré.");
+    return false;
   }
 
-  if (errorMessage && errorMessage !== "") {
-    logger.error(errorMessage);
-    return {
-      success: false,
-      error: errorMessage,
-    };
-  }
+  return true;
+}
 
-  ipcMain.emit(OPCODES.SWITCH_VIEW, VIEWS.APP);
-  return response.data;
+async function saveUserData(xboxData) {
+  const config = configManager.getConfig();
+  const mcData = await xboxData.getMinecraft();
+  const mclcData = mcData.mclc();
+
+  mclcData.meta.refresh = xboxData.msToken.refresh_token;
+
+  config.selectedAccount = mclcData.uuid;
+  config.authenticationDatabase[mclcData.uuid] = mclcData;
+
+  configManager.setConfig(config);
 }
