@@ -143,7 +143,8 @@ function validateKeySet(srcObj, destObj) {
 exports.getDirectories = function () {
     return {
         data: dataPath,
-        instances: ensureDirectory(),
+        instances: ensureDirectory(path.join(dataPath, "instances")),
+        runtime: ensureDirectory(path.join(dataPath, "runtime")),
         launcher: launcherDir
     }
 };

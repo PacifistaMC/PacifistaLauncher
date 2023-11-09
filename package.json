@@ -34,6 +34,9 @@
     "luxon": "^3.4.3",
     "minecraft-launcher-core": "^3.17.2",
     "msmc": "^4.1.0",
-    "winston": "^3.11.0"
+    "node-stream-zip": "^1.15.0",
+    "tar-fs": "^3.0.4",
+    "winston": "^3.11.0",
+    "zlib": "^1.0.5"
   }
 }

@@ -4,6 +4,7 @@ const path = require("path");
 const { handleLogin, handleLogout } = require("./assets/js/microsoftauth");
 const configManager = require("./assets/js/configmanager");
 const { refreshAccount } = require('./assets/js/authmanager');
+const javaUtils = require('./assets/js/java');
 
 configManager.load();
 
@@ -73,4 +74,8 @@ ipcMain.handle(OPCODES.GET_CONFIG, () => {
 
 ipcMain.on(OPCODES.SET_CONFIG, (_event, newConfig) => {
     configManager.setConfig(JSON.parse(newConfig));
+});
+
+ipcMain.on(OPCODES.PLAY, async () => {
+    await javaUtils.fullJavaCheck();
 });
