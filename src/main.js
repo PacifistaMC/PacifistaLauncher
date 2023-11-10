@@ -5,6 +5,7 @@ const { handleLogin, handleLogout } = require("./assets/js/microsoftauth");
 const configManager = require("./assets/js/configmanager");
 const { refreshAccount } = require('./assets/js/authmanager');
 const javaUtils = require('./assets/js/java');
+const launcher = require('./assets/js/launcher');
 
 configManager.load();
 
@@ -78,4 +79,5 @@ ipcMain.on(OPCODES.SET_CONFIG, (_event, newConfig) => {
 
 ipcMain.on(OPCODES.PLAY, async () => {
     await javaUtils.fullJavaCheck();
+    await launcher.launchGame();
 });

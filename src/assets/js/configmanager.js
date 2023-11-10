@@ -10,11 +10,10 @@ const sysRoot =
     (process.platform == "darwin"
         ? process.env.HOME + "/Library/Application Support"
         : process.env.HOME);
-const dataPath = path.join(sysRoot, ".pacifistalauncher");
+const dataPath = path.join(sysRoot, ".pacifista");
 const launcherDir = app.getPath("userData");
 const configPath = path.join(launcherDir, "config.json");
 const firstLaunch = !fs.existsSync(configPath);
-const instancesDir = path.join(dataPath, "instances");
 
 if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
 
@@ -49,7 +48,6 @@ const DEFAULT_CONFIG = {
         host: "play.pacifista.fr",
         version: "1.20.1",
         type: "release",
-        instanceDir: instancesDir,
     }
 };
 
@@ -141,15 +139,17 @@ function validateKeySet(srcObj, destObj) {
 };
 
 exports.getDirectories = function () {
+    const instanceDir = ensureDirectory(path.join(dataPath, "instances", config.server.version));
     return {
         data: dataPath,
-        instances: ensureDirectory(path.join(dataPath, "instances")),
+        instance: instanceDir,
         runtime: ensureDirectory(path.join(dataPath, "runtime")),
+        mods: ensureDirectory(path.join(instanceDir, "mods")),
         launcher: launcherDir
     }
 };
 
 function ensureDirectory(directory) {
-    if (!fs.existsSync(directory)) fs.mkdirSync(directory);
+    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
     return directory;
 };
