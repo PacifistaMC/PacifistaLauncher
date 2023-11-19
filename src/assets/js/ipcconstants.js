@@ -1,4 +1,5 @@
 exports.AZURE_CLIENT_ID = "fcc03b46-3ce2-4666-a548-d2a34b7a8815";
+exports.DISCORD_RPC_CLIENT_ID = "1175831066976735332"; // Discord bot's client ID. Test purposes. Bot owner: Discord @gamecreep35 & GitHub @iGameCreep
 
 // Opcodes
 exports.OPCODES = {

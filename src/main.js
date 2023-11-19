@@ -6,8 +6,10 @@ const configManager = require("./assets/js/configmanager");
 const { refreshAccount } = require('./assets/js/authmanager');
 const javaUtils = require('./assets/js/java');
 const launcher = require('./assets/js/launcher');
+const rpc = require('./assets/js/discordRPC');
 
 configManager.load();
+rpc.loadRPC();
 
 const APP_ICON_PATH = path.join(__dirname, "../build/icon.ico");
 

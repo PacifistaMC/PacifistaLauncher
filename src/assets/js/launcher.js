@@ -4,11 +4,16 @@ const configManager = require('./configmanager');
 const fileUtils = require('./fileUtils');
 const { getLogger } = require('./logger');
 const { Client } = require('minecraft-launcher-core');
+const rpc = require('./discordRPC');
 
 const logger = getLogger("Minecraft");
 const launcher = new Client();
 launcher.on('debug', (info) => logger.debug(info));
 launcher.on('data', (info) => logger.info(info));
+launcher.on('close', () => rpc.setActivity({
+    details: "Dans le lanceur",
+    startTimestamp: new Date(),
+}));
 
 exports.launchGame = async function () {
     const config = configManager.getConfig();
@@ -42,6 +47,11 @@ exports.launchGame = async function () {
             type: "legacy",
             identifier: config.server.host
         },
+    });
+
+    rpc.setActivity({
+        details: "En jeu",
+        startTimestamp: new Date(),
     });
 }
 
