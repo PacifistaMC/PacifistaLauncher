@@ -90,7 +90,7 @@ exports.load = function () {
             exports.save();
         }
         if (doValidate) {
-            config = validateKeySet(DEFAULT_CONFIG, config);
+            config = exports.validateKeySet(DEFAULT_CONFIG, config);
             exports.save();
         }
     }
@@ -118,7 +118,7 @@ exports.setConfig = function (newConfig) {
  * @param {Object} destObj - The destination object.
  * @returns {Object} - A validated destination object.
  */
-function validateKeySet(srcObj, destObj) {
+exports.validateKeySet = function (srcObj, destObj) {
     if (srcObj == null) {
         srcObj = {};
     }
@@ -132,7 +132,7 @@ function validateKeySet(srcObj, destObj) {
             !(srcObj[key] instanceof Array) &&
             validationBlacklist.indexOf(key) === -1
         ) {
-            destObj[key] = validateKeySet(srcObj[key], destObj[key]);
+            destObj[key] = exports.validateKeySet(srcObj[key], destObj[key]);
         }
     }
     return destObj;
