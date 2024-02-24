@@ -33,10 +33,14 @@ exports.loadRPC = function () {
         }, 15e3);
     });
 
-    rpc.login({ clientId: DISCORD_RPC_CLIENT_ID }).catch(logger.error);
+    rpc.login({ clientId: DISCORD_RPC_CLIENT_ID }).catch(() => {
+        rpc = null;
+        logger.error("Could not connect to Discord.");
+    });
 }
 
 exports.setActivity = function (customOptions = {}) {
+    if (rpc === null) return;
     options = configManager.validateKeySet(options, customOptions);
     rpc.setActivity(options);
 }

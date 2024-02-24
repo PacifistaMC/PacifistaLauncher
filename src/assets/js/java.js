@@ -39,7 +39,7 @@ function hasJavaOnCorrectVersion() {
     return new Promise((resolve) => {
         const result = spawn('java', ['-version']);
 
-        result.on('error', function (err) {
+        result.on('error', function () {
             resolve(false);
         });
 

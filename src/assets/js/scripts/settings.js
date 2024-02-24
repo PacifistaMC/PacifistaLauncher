@@ -12,31 +12,39 @@ window.onload = async function () {
 
     document.getElementById('fullscreen').checked = config.settings.game.fullscreen;
     document.getElementById('detached').checked = config.settings.game.launchDetached;
+    document.getElementById('hideLauncherOnGameStart').checked = config.settings.launcher.hideLauncherOnGameStart;
 
     const allocatedRam = document.getElementById('allocated-ram');
-    allocatedRam.min = config.javaConfig.minRAM;
-    allocatedRam.max = config.javaConfig.maxRAM;
-    allocatedRam.value = config.javaConfig.minRAM;
+    allocatedRam.setAttribute("min", config.javaConfig.minRAM);
+    allocatedRam.setAttribute("max", config.javaConfig.maxRAM);
+    allocatedRam.value = config.javaConfig.allocatedRAM;
     document.getElementById('total-ram').innerHTML = `RAM totale: ${config.javaConfig.maxRAM} GB`;
+    setAllocatedRamValue(config.javaConfig.allocatedRAM);
 
-    allocatedRam.addEventListener('input', () => {
-        document.getElementById('allocated-ram-value').innerHTML = `${allocatedRam.value} GB`;
-    });
+    allocatedRam.addEventListener('input', () => setAllocatedRamValue());
+
+    function setAllocatedRamValue(value) {
+        document.getElementById('allocated-ram-value').innerHTML = `${value ?? allocatedRam.value} GB`;
+    }
 
     document.getElementById("save-btn").addEventListener("click", () => {
         const resolutionWidth = document.getElementById("resolution-width").value;
         const resolutionHeight = document.getElementById("resolution-height").value;
         const fullscreen = document.getElementById("fullscreen").checked;
         const detached = document.getElementById("detached").checked;
-        const maxRam = document.getElementById("allocated-ram").value;
+        const allocatedRam = Number(document.getElementById("allocated-ram").value);
 
         config.settings.game.resWidth = resolutionWidth;
         config.settings.game.resHeight = resolutionHeight;
         config.settings.game.fullscreen = fullscreen;
         config.settings.game.launchDetached = detached;
-        config.javaConfig.maxRAM = maxRam;
+        config.javaConfig.allocatedRAM = allocatedRam;
 
         window.bridge.setConfig(JSON.stringify(config));
+        window.bridge.switchView(VIEWS.APP);
+    });
+
+    document.getElementById("cancel-btn").addEventListener("click", () => {
         window.bridge.switchView(VIEWS.APP);
     });
 }

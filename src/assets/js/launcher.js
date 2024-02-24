@@ -5,15 +5,25 @@ const fileUtils = require('./fileUtils');
 const { getLogger } = require('./logger');
 const { Client } = require('minecraft-launcher-core');
 const rpc = require('./discordRPC');
+const { ipcMain } = require('electron');
+const { OPCODES } = require('./ipcconstants');
 
 const logger = getLogger("Minecraft");
 const launcher = new Client();
 launcher.on('debug', (info) => logger.debug(info));
-launcher.on('data', (info) => logger.info(info));
-launcher.on('close', () => rpc.setActivity({
-    details: "Dans le lanceur",
-    startTimestamp: new Date(),
-}));
+launcher.on('data', (info) => {
+    const config = configManager.getConfig();
+    const selectedAccount = config.authenticationDatabase[config.selectedAccount];
+    if (info.includes(selectedAccount.name)) ipcMain.emit(OPCODES.MC_STARTED);
+    logger.info(info);
+});
+launcher.on('close', () => {
+    ipcMain.emit(OPCODES.MC_STOPPED);
+    rpc.setActivity({
+        details: "Dans le lanceur",
+        startTimestamp: new Date(),
+    });
+});
 
 exports.launchGame = async function () {
     const config = configManager.getConfig();
@@ -42,11 +52,7 @@ exports.launchGame = async function () {
         },
         overrides: {
             detached: config.settings.game.launchDetached,
-        },
-        quickPlay: {
-            type: "legacy",
-            identifier: config.server.host
-        },
+        }
     });
 
     rpc.setActivity({

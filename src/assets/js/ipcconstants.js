@@ -1,5 +1,5 @@
 exports.AZURE_CLIENT_ID = "fcc03b46-3ce2-4666-a548-d2a34b7a8815";
-exports.DISCORD_RPC_CLIENT_ID = "1175831066976735332"; // Discord bot's client ID. Test purposes. Bot owner: Discord @gamecreep35 & GitHub @iGameCreep
+exports.DISCORD_RPC_CLIENT_ID = "1175831066976735332"; // Discord app's client ID. Test purposes. App owner: Discord @gamecreep35 & GitHub @iGameCreep
 
 // Opcodes
 exports.OPCODES = {
@@ -9,6 +9,8 @@ exports.OPCODES = {
     SET_CONFIG: "SET_CONFIG",
     SWITCH_VIEW: "SWITCH_VIEW",
     PLAY: "PLAY",
+    MC_STARTED: "MC_STARTED",
+    MC_STOPPED: "MC_STOPPED",
 };
 
 // Reply types for REPLY opcode.

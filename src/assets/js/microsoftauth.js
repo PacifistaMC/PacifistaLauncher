@@ -1,9 +1,8 @@
-const { BrowserWindow, ipcMain } = require("electron");
+const { BrowserWindow } = require("electron");
 const { AZURE_CLIENT_ID, REPLY_TYPES, ERRORS } = require("./ipcconstants");
 const { addMicrosoftAccount, removeMicrosoftAccount } = require('./authmanager');
 
-const REDIRECT_URI_PREFIX =
-    "https://login.microsoftonline.com/common/oauth2/nativeclient?";
+const REDIRECT_URI_PREFIX = "https://login.microsoftonline.com/common/oauth2/nativeclient?";
 
 let msftAuthWindow;
 let msftAuthSuccess;
@@ -38,7 +37,7 @@ exports.handleLogin = async function (APP_ICON_PATH) {
             }
         });
 
-        msftAuthWindow.webContents.on("did-navigate", async (_, uri) => {
+        msftAuthWindow.webContents.on("did-navigate", (_, uri) => {
             if (uri.startsWith(REDIRECT_URI_PREFIX)) {
                 const url = new URL(uri);
                 const code = url.searchParams.get('code');

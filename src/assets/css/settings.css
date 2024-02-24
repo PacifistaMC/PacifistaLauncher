@@ -7,7 +7,7 @@ body {
   background-color: var(--secondary-color);
   border-radius: 25px;
   display: flex;
-  height: 25rem;
+  height: 30rem;
   max-width: 50rem;
   margin: 0 auto;
   padding: 20px;
@@ -161,6 +161,7 @@ input:checked + .slider:before {
 }
 
 .btn-container {
+  display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;

@@ -29,6 +29,7 @@ const DEFAULT_CONFIG = {
             launchDetached: true,
         },
         launcher: {
+            hideLauncherOnGameStart: true,
             allowPrerelease: false,
             dataDirectory: dataPath,
         },
@@ -60,7 +61,7 @@ function getAbsoluteMinRAM() {
 
 function getAbsoluteMaxRAM() {
     const fullRam = os.totalmem() / 1073741824;
-    return Math.round((fullRam + Number.EPSILON) * 100) / 100;
+    return Math.round(Math.round((fullRam + Number.EPSILON) * 100) / 100);
 };
 
 exports.save = function () {

@@ -8,6 +8,7 @@ window.onload = async function () {
     const settings = document.getElementById("settings");
     const play = document.getElementById("play");
     const logout = document.getElementById("logout");
+    const shop = document.getElementById("shop");
 
     avatar.style.backgroundImage = `url('https://mc-heads.net/body/${user.uuid}/right')`;
     pseudo.innerHTML = user.name;
@@ -22,5 +23,9 @@ window.onload = async function () {
 
     logout.addEventListener("click", () => {
         window.bridge.logout();
+    });
+
+    shop.addEventListener("click", () => {
+        window.bridge.openInBrowser("https://pacifista.fr/shop");
     });
 }

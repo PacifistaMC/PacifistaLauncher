@@ -11,7 +11,7 @@ const zlib = require('zlib');
 const logger = getLogger("Files Utils");
 
 exports.downloadFile = function (url, downloadPath) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         axios.default({
             url,
             method: 'GET',
