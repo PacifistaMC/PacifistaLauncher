@@ -1,5 +1,5 @@
 window.onload = async function () {
-  const { VIEWS } = window.bridge.ipcConstants;
+  const { VIEWS } = window.bridge.constants;
   let config = await window.bridge.getConfig();
 
   const selectedAccount = config.authenticationDatabase[config.selectedAccount];

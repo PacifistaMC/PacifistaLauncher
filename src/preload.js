@@ -1,13 +1,15 @@
 const { contextBridge, ipcRenderer, shell } = require("electron");
-const ipcConstants = require("./assets/js/constants");
+const constants = require("./assets/js/constants");
+const requests = require('./assets/js/requests');
 
 contextBridge.exposeInMainWorld("bridge", {
-  ipcConstants,
-  login: () => ipcRenderer.invoke(ipcConstants.OPCODES.LOGIN),
-  logout: () => ipcRenderer.invoke(ipcConstants.OPCODES.LOGOUT),
-  switchView: (view) => ipcRenderer.send(ipcConstants.OPCODES.SWITCH_VIEW, view),
-  getConfig: () => ipcRenderer.invoke(ipcConstants.OPCODES.GET_CONFIG),
-  setConfig: (newConfig) => ipcRenderer.send(ipcConstants.OPCODES.SET_CONFIG, newConfig),
-  play: () => ipcRenderer.send(ipcConstants.OPCODES.PLAY),
+  constants,
+  login: () => ipcRenderer.invoke(constants.OPCODES.LOGIN),
+  logout: () => ipcRenderer.invoke(constants.OPCODES.LOGOUT),
+  switchView: (view) => ipcRenderer.send(constants.OPCODES.SWITCH_VIEW, view),
+  getConfig: () => ipcRenderer.invoke(constants.OPCODES.GET_CONFIG),
+  setConfig: (newConfig) => ipcRenderer.send(constants.OPCODES.SET_CONFIG, newConfig),
+  play: () => ipcRenderer.send(constants.OPCODES.PLAY),
   openInBrowser: (url) => shell.openExternal(url),
+  getData: (url, method) => requests.getData(url, method),
 });

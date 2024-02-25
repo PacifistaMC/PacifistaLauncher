@@ -1,5 +1,5 @@
 window.onload = function () {
-  const { REPLY_TYPES, ERRORS } = window.bridge.ipcConstants;
+  const { REPLY_TYPES, ERRORS } = window.bridge.constants;
 
   let loginMicrosoftBtn = document.getElementById("login");
 

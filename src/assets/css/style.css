@@ -4,6 +4,9 @@
 
   --danger-primary-color: #dc3545;
   --danger-secondary-color: #c82333;
+
+  --success-primary-color: #28a745;
+  --success-secondary-color: #218838 ;
 }
 
 body {

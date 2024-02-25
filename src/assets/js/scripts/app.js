@@ -1,7 +1,8 @@
 window.onload = async function () {
-  const { VIEWS } = window.bridge.ipcConstants;
+  const { VIEWS, URL } = window.bridge.constants;
   const config = await window.bridge.getConfig();
   const user = config.authenticationDatabase[config.selectedAccount];
+  const info = await window.bridge.getData(URL.PACIFISTA_INFO);
 
   const avatar = document.getElementById("avatar");
   const pseudo = document.getElementById("pseudo");
@@ -28,4 +29,26 @@ window.onload = async function () {
   shop.addEventListener("click", () => {
     window.bridge.openInBrowser("https://pacifista.fr/shop");
   });
+
+  info.servers.forEach((server) => {
+    const card = generateServerCard(server);
+    document.getElementById("servers").innerHTML += card;
+  });
+}
+
+function generateServerCard(data) {
+  const status = data.online ? {
+    class: "online",
+    text: "EN LIGNE"
+  } : {
+    class: "offline",
+    text: "HORS LIGNE"
+  };
+  const onlinePlayers = `${data.onlinePlayers}/${data.playerSlots}`;
+
+  return `<div class="card server-card">
+  <h1>${data.name}</h1>
+  <p class="status ${status.class}">${status.text}</p>
+  <p><b>${onlinePlayers}</b> Joueurs Connectés</p>
+</div>`
 }
