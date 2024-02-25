@@ -1,6 +1,6 @@
 const configManager = require('./configmanager');
 const DiscordRPC = require('discord-rpc');
-const { DISCORD_RPC_CLIENT_ID } = require('./ipcconstants');
+const { DISCORD_RPC_CLIENT_ID } = require('./constants');
 const { getLogger } = require('./logger');
 
 const logger = getLogger("Discord RPC");

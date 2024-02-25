@@ -1,5 +1,5 @@
 const { ipcMain } = require("electron");
-const { AZURE_CLIENT_ID, OPCODES, VIEWS } = require("./ipcconstants");
+const { AZURE_CLIENT_ID, OPCODES, VIEWS } = require("./constants");
 const { Auth, assets } = require('msmc');
 const { getLogger } = require("./logger");
 const configManager = require("./configmanager");

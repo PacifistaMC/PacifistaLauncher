@@ -1,5 +1,5 @@
 const { BrowserWindow } = require("electron");
-const { AZURE_CLIENT_ID, REPLY_TYPES, ERRORS } = require("./ipcconstants");
+const { AZURE_CLIENT_ID, REPLY_TYPES, ERRORS } = require("./constants");
 const { addMicrosoftAccount, removeMicrosoftAccount } = require('./authmanager');
 
 const REDIRECT_URI_PREFIX = "https://login.microsoftonline.com/common/oauth2/nativeclient?";

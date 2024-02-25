@@ -1,4 +1,4 @@
-const { OPCODES } = require("./assets/js/ipcconstants");
+const { OPCODES } = require("./assets/js/constants");
 const { app, ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
 const { handleLogin, handleLogout } = require("./assets/js/microsoftauth");
@@ -71,17 +71,17 @@ ipcMain.on(OPCODES.SET_CONFIG, (_event, newConfig) => {
   configManager.setConfig(JSON.parse(newConfig));
 });
 
-ipcMain.on(OPCODES.PLAY, async () => {
-  await javaUtils.fullJavaCheck();
-  await launcher.launchGame();
+ipcMain.on(OPCODES.PLAY, () => {
+  javaUtils.fullJavaCheck();
+  launcher.launchGame();
 });
 
-ipcMain.on(OPCODES.MC_STARTED, async () => {
+ipcMain.on(OPCODES.MC_STARTED, () => {
   const config = configManager.getConfig();
   if (config.settings.launcher.hideLauncherOnGameStart) mainWindow.hide();
 });
 
-ipcMain.on(OPCODES.MC_STOPPED, async () => {
+ipcMain.on(OPCODES.MC_STOPPED, () => {
   const config = configManager.getConfig();
   if (config.settings.launcher.hideLauncherOnGameStart) mainWindow.show();
 });

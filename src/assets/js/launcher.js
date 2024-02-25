@@ -6,7 +6,7 @@ const { getLogger } = require('./logger');
 const { Client } = require('minecraft-launcher-core');
 const rpc = require('./discordRPC');
 const { ipcMain } = require('electron');
-const { OPCODES } = require('./ipcconstants');
+const { OPCODES } = require('./constants');
 
 const logger = getLogger("Minecraft");
 const launcher = new Client();

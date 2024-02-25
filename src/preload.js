@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer, shell } = require("electron");
-const ipcConstants = require("./assets/js/ipcconstants");
+const ipcConstants = require("./assets/js/constants");
 
 contextBridge.exposeInMainWorld("bridge", {
   ipcConstants,
