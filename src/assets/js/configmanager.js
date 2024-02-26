@@ -83,7 +83,7 @@ exports.load = function () {
       config = JSON.parse(fs.readFileSync(configPath, { encoding: "utf-8" }));
       doValidate = true;
     } catch (err) {
-      logger.error(err);
+      logger.error("Error while loading config file:" + err);
       logger.info("Configuration file contains malformed JSON or is corrupt.");
       logger.info("Generating a new configuration file.");
       fs.ensureDirSync(path.join(configPath, ".."));

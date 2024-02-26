@@ -7,6 +7,8 @@ const crypto = require('crypto');
 const StreamZip = require('node-stream-zip');
 const tar = require('tar-fs');
 const zlib = require('zlib');
+const { ipcMain } = require('electron');
+const { ERRORS } = require('./constants');
 
 const logger = getLogger("Files Utils");
 
@@ -28,10 +30,12 @@ exports.downloadFile = function (url, downloadPath) {
 
       fileStream.on('error', (err) => {
         logger.error("An error has occurred while downloading the file: " + err);
+        ipcMain.emit(ERRORS.FILE_DOWNLOAD_FAILED + err);
         reject(err);
       });
     }).catch((err) => {
       logger.error("Error downloading the file: " + err);
+      ipcMain.emit(ERRORS.FILE_DOWNLOAD_FAILED + err);
       reject(err);
     });
   });
@@ -45,6 +49,7 @@ exports.validateInstallation = async function (filePath, algo, hash) {
     return calculatedHash === hash;
   } catch (err) {
     logger.error("Failed to calculate hash. Error: " + err);
+    ipcMain.emit(ERRORS.FILE_HASH_CALCULATING_FAILED);
   }
   return false;
 }
@@ -90,22 +95,22 @@ async function extractZip(zipPath) {
 async function extractTarGz(tarGzPath) {
   return new Promise((resolve, reject) => {
     fs_extra.createReadStream(tarGzPath)
-      .on('error', err => logger.error(err))
+      .on('error', (err) => handleTarGzError(err))
       .pipe(zlib.createGunzip())
-      .on('error', err => logger.error(err))
+      .on('error', (err) => handleTarGzError(err))
       .pipe(tar.extract(path.dirname(tarGzPath), {
         map: (header) => {
           return header;
         }
       }))
-      .on('error', err => {
-        logger.error(err);
+      .on('error', (err) => {
+        handleTarGzError(err);
         reject(err);
       })
       .on('finish', () => {
-        fs_extra.unlink(tarGzPath, err => {
+        fs_extra.unlink(tarGzPath, (err) => {
           if (err) {
-            logger.error(err);
+            handleTarGzError(err);
             reject(err);
           } else {
             resolve();
@@ -113,4 +118,9 @@ async function extractTarGz(tarGzPath) {
         })
       })
   })
+}
+
+function handleTarGzError(err) {
+  logger.error(err);
+  ipcMain.emit(ERRORS.FILE_EXTRACT_TARGZ + err);
 }

@@ -15,6 +15,7 @@ exports.OPCODES = {
   PLAY: "PLAY",
   MC_STARTED: "MC_STARTED",
   MC_STOPPED: "MC_STOPPED",
+  ERROR: "ERROR",
 };
 
 // Reply types for REPLY opcode.
@@ -25,9 +26,22 @@ exports.REPLY_TYPES = {
 
 // Error types for ERROR reply.
 exports.ERRORS = {
-  MSFT_ALREADY_OPEN: "MSFT_AUTH_ERR_ALREADY_OPEN",
-  MSFT_NOT_FINISHED: "MSFT_AUTH_ERR_NOT_FINISHED",
-  OTHER: "MSFT_AUTH_ERR_OTHER",
+  MSFT_ALREADY_OPEN: "La fenêtre de connexion est déjà ouverte !",
+  MSFT_NOT_FINISHED: "La connexion en cours n'est pas terminée !",
+  MSFT_OTHER: "Une erreur inconnue est survenue.",
+  MSFT_UNABLE_TO_REFRESH: "Impossible de reconnecter le compte enregistré.",
+
+  RCP_NOT_LOADED: "Impossible de charger la Rich Presence Discord.",
+
+  JAVA_NOT_INSTALLED: "Java 17 isn't installed on this system. Starting installation...",
+  JAVA_UNABLE_TO_INSTALL: "Impossible d'installer Java 17. Erreur: ",
+  JAVA_NO_SUITABLE_BINARY: "Impossible de trouver une version de java à installer.",
+  JAVA_FAILED_TO_INSTALL: "Erreur lors de l'installation de Java: ",
+  JAVA_UNABLE_TO_GET_VERSION: "Impossible de récupérer une version de Java.",
+
+  FILE_DOWNLOAD_FAILED: "Une erreur est survenue lors du téléchargement d'un fichier: ",
+  FILE_HASH_CALCULATING_FAILED: "Une erreur est survenue lors de la vérification d'un fichier: ",
+  FILE_EXTRACT_TARGZ: "Une erreur est survenue lors de l'extraction d'un fichier tar.gz: ",
 };
 
 exports.VIEWS = {
@@ -35,3 +49,7 @@ exports.VIEWS = {
   APP: "pages/app.html",
   SETTINGS: "pages/settings.html",
 };
+
+exports.TOAST_OPTIONS = {
+  position: ""
+}

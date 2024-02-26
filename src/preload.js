@@ -12,4 +12,7 @@ contextBridge.exposeInMainWorld("bridge", {
   play: () => ipcRenderer.send(constants.OPCODES.PLAY),
   openInBrowser: (url) => shell.openExternal(url),
   getData: (url, method) => requests.getData(url, method),
+  on: (channel, callback) => {
+    ipcRenderer.on(channel, (_event, ...args) => callback(...args))
+  }
 });

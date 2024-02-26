@@ -1,10 +1,12 @@
 const { ipcMain } = require("electron");
-const { AZURE_CLIENT_ID, OPCODES, VIEWS } = require("./constants");
+const { AZURE_CLIENT_ID, OPCODES, VIEWS, ERRORS } = require("./constants");
 const { Auth, assets } = require('msmc');
 const { getLogger } = require("./logger");
 const configManager = require("./configmanager");
 
 const logger = getLogger("Microsoft Authenticator");
+
+const lexiPack = assets.loadLexiPack("./src/assets/lexiPacks/french.json");
 
 const auth = new Auth({
   client_id: AZURE_CLIENT_ID,
@@ -22,9 +24,10 @@ exports.addMicrosoftAccount = async function (code) {
     const xboxData = await auth.login(code);
     await saveUserData(xboxData);
   } catch (err) {
-    const errMsg = assets.lexicon[err] ?? "Erreur inconnue lors de la connexion.";
+    const errMsg = lexiPack[err] ?? "Erreur inconnue lors de la connexion.";
     logger.error(errMsg);
-    return { success: false, error: errMsg };
+    ipcMain.emit(OPCODES.ERROR, errMsg)
+    return { success: false };
   }
 
   configManager.setConfig(config);
@@ -54,7 +57,8 @@ exports.refreshAccount = async function () {
   try {
     await auth.refresh(user.meta.refresh);
   } catch (err) {
-    logger.error("Impossible de reconnecter le compte enregistré.");
+    logger.error(ERRORS.MSFT_UNABLE_TO_REFRESH);
+    ipcMain.emit(ERRORS.MSFT_UNABLE_TO_REFRESH);
     return false;
   }
 

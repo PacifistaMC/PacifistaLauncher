@@ -1,11 +1,12 @@
 const configManager = require('./configmanager');
 const DiscordRPC = require('discord-rpc');
-const { DISCORD_RPC_CLIENT_ID } = require('./constants');
+const { DISCORD_RPC_CLIENT_ID, OPCODES, ERRORS } = require('./constants');
 const { getLogger } = require('./logger');
+const { ipcRenderer } = require('electron');
 
 const logger = getLogger("Discord RPC");
 
-let rpc;
+let rpc = null;
 let options = {
   details: `Dans le lanceur`,
   state: 'IP: play.pacifista.fr',
@@ -18,6 +19,7 @@ let options = {
 };
 
 exports.loadRPC = function () {
+  if (rpc !== null) return;
   logger.info("Loading Discord RPC");
   DiscordRPC.register(DISCORD_RPC_CLIENT_ID);
 
@@ -35,7 +37,8 @@ exports.loadRPC = function () {
 
   rpc.login({ clientId: DISCORD_RPC_CLIENT_ID }).catch(() => {
     rpc = null;
-    logger.error("Could not connect to Discord.");
+    logger.error(ERRORS.RCP_NOT_LOADED);
+    ipcRenderer.emit(OPCODES.ERROR, ERRORS.RCP_NOT_LOADED);
   });
 }
 

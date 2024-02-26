@@ -1,5 +1,5 @@
 const { OPCODES } = require("./assets/js/constants");
-const { app, ipcMain, BrowserWindow } = require("electron");
+const { app, ipcMain, BrowserWindow, ipcRenderer } = require("electron");
 const path = require("path");
 const { handleLogin, handleLogout } = require("./assets/js/microsoftauth");
 const configManager = require("./assets/js/configmanager");
@@ -9,7 +9,6 @@ const launcher = require('./assets/js/launcher');
 const rpc = require('./assets/js/discordRPC');
 
 configManager.load();
-rpc.loadRPC();
 
 const APP_ICON_PATH = path.join(__dirname, "../build/icon.ico");
 
@@ -34,6 +33,9 @@ async function createWindow() {
   else pagePath = "pages/index.html";
 
   mainWindow.loadURL(path.join(__dirname, pagePath));
+  mainWindow.webContents.on('did-finish-load', () => {
+    rpc.loadRPC();
+  });
 }
 
 app.disableHardwareAcceleration();
@@ -84,4 +86,8 @@ ipcMain.on(OPCODES.MC_STARTED, () => {
 ipcMain.on(OPCODES.MC_STOPPED, () => {
   const config = configManager.getConfig();
   if (config.settings.launcher.hideLauncherOnGameStart) mainWindow.show();
+});
+
+ipcMain.on(OPCODES.ERROR, (err) => {
+  mainWindow.webContents.send(OPCODES.ERROR, err);
 });

@@ -1,5 +1,5 @@
-const { BrowserWindow } = require("electron");
-const { AZURE_CLIENT_ID, REPLY_TYPES, ERRORS } = require("./constants");
+const { ipcMain, BrowserWindow } = require("electron");
+const { AZURE_CLIENT_ID, REPLY_TYPES, ERRORS, OPCODES } = require("./constants");
 const { addMicrosoftAccount, removeMicrosoftAccount } = require('./authmanager');
 
 const REDIRECT_URI_PREFIX = "https://login.microsoftonline.com/common/oauth2/nativeclient?";
@@ -10,9 +10,10 @@ exports.handleLogin = async function (APP_ICON_PATH) {
   return new Promise((resolve) => {
     if (msftAuthWindow) {
       resolve({
-        reply_type: REPLY_TYPES.ERROR,
-        error: ERRORS.MSFT_ALREADY_OPEN,
+        reply_type: REPLY_TYPES.ERROR
       });
+
+      ipcMain.emit(OPCODES.ERROR, ERRORS.MSFT_ALREADY_OPEN);
     }
     msftAuthSuccess = false;
     msftAuthWindow = new BrowserWindow({
@@ -31,9 +32,10 @@ exports.handleLogin = async function (APP_ICON_PATH) {
     msftAuthWindow.on("close", () => {
       if (!msftAuthSuccess) {
         resolve({
-          reply_type: REPLY_TYPES.ERROR,
-          error: ERRORS.MSFT_NOT_FINISHED,
+          reply_type: REPLY_TYPES.ERROR
         });
+
+        ipcMain.emit(OPCODES.ERROR, ERRORS.MSFT_NOT_FINISHED);
       }
     });
 
@@ -47,9 +49,7 @@ exports.handleLogin = async function (APP_ICON_PATH) {
             resolve({ reply_type: REPLY_TYPES.SUCCESS });
           } else {
             resolve({
-              reply_type: REPLY_TYPES.ERROR,
-              error: ERRORS.OTHER,
-              message: response.error,
+              reply_type: REPLY_TYPES.ERROR
             });
           }
         });
@@ -76,9 +76,10 @@ exports.handleLogout = function (APP_ICON_PATH) {
   return new Promise((resolve) => {
     if (msftLogoutWindow) {
       resolve({
-        reply_type: REPLY_TYPES.ERROR,
-        error: ERRORS.MSFT_ALREADY_OPEN,
+        reply_type: REPLY_TYPES.ERROR
       });
+
+      ipcMain.emit(OPCODES.ERROR, ERRORS.MSFT_ALREADY_OPEN);
     }
 
     msftLogoutSuccess = false;
@@ -99,9 +100,10 @@ exports.handleLogout = function (APP_ICON_PATH) {
     msftLogoutWindow.on("close", () => {
       if (!msftLogoutSuccess) {
         resolve({
-          reply_type: REPLY_TYPES.ERROR,
-          error: ERRORS.MSFT_NOT_FINISHED,
+          reply_type: REPLY_TYPES.ERROR
         });
+
+        ipcMain.emit(OPCODES.ERROR, ERRORS.MSFT_NOT_FINISHED);
       } else if (!msftLogoutSuccessSent) {
         msftLogoutSuccessSent = true;
         resolve({ reply_type: REPLY_TYPES.SUCCESS });

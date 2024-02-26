@@ -5,6 +5,8 @@ const axios = require('axios');
 const path = require('path');
 const configManager = require('./configmanager');
 const fileUtils = require('./fileUtils');
+const { ERRORS } = require('./constants');
+const { ipcMain } = require('electron');
 
 const logger = getLogger("Java Utils");
 
@@ -12,7 +14,8 @@ const desiredJavaVersion = '17';
 
 exports.fullJavaCheck = async function () {
   if (!await hasJavaOnCorrectVersion()) {
-    logger.error("Java 17 isn't installed on this system. Starting installation...");
+    logger.error(ERRORS.JAVA_NOT_INSTALLED);
+    ipcMain.emit(ERRORS.JAVA_NOT_INSTALLED);
 
     let distribution;
     if (process.platform === "darwin") distribution = await getLatestCorretto();
@@ -26,7 +29,8 @@ exports.fullJavaCheck = async function () {
       logger.info("Extracting archive...");
       await fileUtils.extractFile(distribution.path);
     } catch (err) {
-      logger.error("Unable to install Java 17 on the system. Error: " + err);
+      logger.error(ERRORS.JAVA_UNABLE_TO_INSTALL + err);
+      ipcMain.emit(ERRORS.JAVA_UNABLE_TO_INSTALL + err);
     }
 
     logger.info("Successfully installed Java 17.");
@@ -104,12 +108,17 @@ async function getLatestAdoptium() {
         algo: "sha256",
         path: path.join(getLauncherRuntimeDir(), binaryPackage.name)
       }
-    } else {
+    } else if (res.data.length <= 0) {
       logger.error(`Failed to find a suitable Adoptium binary for JDK ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}).`);
+      ipcMain.emit(ERRORS.JAVA_NO_SUITABLE_BINARY);
       return null;
+    } else {
+      logger.error(`Error while retrieving latest Adoptium JDK ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}): ${res.status} ${res.statusText ?? ''}`);
+      ipcMain.emit(ERRORS.JAVA_UNABLE_TO_GET_VERSION);
     }
   } catch (err) {
-    logger.error("Failed to get latest Adoptium. Error: " + err);
+    logger.error("Failed to install latest Adoptium. Error: " + err);
+    ipcMain.emit(ERRORS.JAVA_FAILED_TO_INSTALL + err);
     return null;
   }
 }
@@ -136,10 +145,12 @@ async function getLatestCorretto() {
       }
     } else {
       logger.error(`Error while retrieving latest Corretto JDK ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}): ${res.status} ${res.statusText ?? ''}`);
+      ipcMain.emit(ERRORS.JAVA_UNABLE_TO_GET_VERSION);
       return null;
     }
   } catch (err) {
-    logger.error("Failed to get latest Corretto. Error: " + err);
+    logger.error("Failed to install latest Corretto. Error: " + err);
+    ipcMain.emit(ERRORS.JAVA_FAILED_TO_INSTALL + err);
     return null;
   }
 }
