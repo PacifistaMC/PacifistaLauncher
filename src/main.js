@@ -1,5 +1,5 @@
 const { OPCODES } = require("./assets/js/constants");
-const { app, ipcMain, BrowserWindow, ipcRenderer } = require("electron");
+const { app, ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
 const { handleLogin, handleLogout } = require("./assets/js/microsoftauth");
 const configManager = require("./assets/js/configmanager");
@@ -7,7 +7,9 @@ const { refreshAccount } = require('./assets/js/authmanager');
 const javaUtils = require('./assets/js/java');
 const launcher = require('./assets/js/launcher');
 const rpc = require('./assets/js/discordRPC');
+const { load } = require('./assets/js/logger');
 
+load();
 configManager.load();
 
 const APP_ICON_PATH = path.join(__dirname, "../build/icon.ico");
