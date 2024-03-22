@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #000;
+  color: var(--primary-color);
+  overflow-x: hidden;
+}
+
+.header {
+  padding: 2vh 0;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.logo-box {
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 2vh 0;
+}
+
+.text-box {
+  flex: 1;
+  padding: 2vh;
+  max-width: 50%;
+  color: var(--primary-color);
+}
+
+.description {
+  font-size: 1.2rem;
+}
+
+.footer {
+  text-align: center;
+  padding: 2vh 0;
+}
