@@ -1,0 +1,47 @@
+:root {
+  --primary-color: #2cafff;
+  --secondary-color: #60a3d9;
+
+  --danger-primary-color: #dc3545;
+  --danger-secondary-color: #c82333;
+
+  --success-primary-color: #28a745;
+  --success-secondary-color: #218838 ;
+}
+
+body {
+  background-image: url("../images/bg_build.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.btn {
+  color: #333;
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+}
+
+.btn-danger {
+  background-color: var(--danger-primary-color);
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-secondary-color);
+}

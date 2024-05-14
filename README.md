@@ -1,35 +1,38 @@
-[![Build Actions Status](https://github.com/FunixG/PacifistaLauncher/workflows/maven-package/badge.svg)](https://github.com/FunixG/PacifistaLauncher/actions)
-
-# PROJET NON MAINTENU / EN PAUSE
-
-# PacifistaLauncheur
-Voici le launcheur officiel de Pacifista (play.pacifista.fr)
+# PacifistaLauncher
+Voici le launcheur officiel de [Pacifista](https://pacifista.fr) (play.pacifista.fr)
 
 ## Installation
-Installez [Java](https://www.java.com/fr/download/) pour utiliser le launcheur
 
-Installez [Maven](https://maven.apache.org/install.html) pour compiler les sources et créer un executable
-
-Une fois toutes les dépendances installées allez dans le dossier du projet et entrez
-```bash
-mvn package
-```
-
-Un dossier target sera donc crée avec nos executables.
-
-Si vous êtes sur windows vous pouvez lancer le .exe sinon lancez le fichier java avec dépendances
-
-## Lancement du launcheur
+Pour récupérer l'installeur ou lancer le lanceur en local, il faudra [NodeJS](https://nodejs.org/) installé **avec NPM**.
+Une fois NodeJS installé, allez dans le dossier du projet et entrez la commande:
 
 ```bash
-PacifistaLauncheur.exe [email mojang] [mot de passe]
+npm install
 ```
 
-Si vos identifiants sont corercts vous pouvez relancer le launcheur plus tard sans arguments, il aura enrengistré votre clé de compte
+Les dépendances seront alors installées.
+
+#### Récupérer l'installeur
+
+Pour générer l'installeur, entrez une des commandes suivantes:
 
 ```bash
-PacifistaLauncheur.exe
+npm run buildW (Pour Windows)
+npm run buildM (Pour Mac)
+npm run buildL (Pour Linux)
 ```
+
+Un dossier dist sera donc crée avec l'exécutable correspondant à l'OS demandé.
+
+#### Lancer l'application sans l'installer (en local)
+
+Pour lancer le lanceur localement, il suffit d'entrer la commande
+
+```bash
+npm run start
+```
+
+Le lanceur sera alors ouvert (si vous fermezla fenêtre de commande, le lanceur se fermera aussi)
 
 ## Contribution
 
@@ -41,6 +44,3 @@ Veuillez vous assurer de mettre à jour les tests le cas échéant.
 [Site web](https://pacifista.fr)
 
 [Créateur](https://twitter.com/funixgaming)
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
