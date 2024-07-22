@@ -1,21 +1,49 @@
 window.onload = async function () {
+  if (await window.bridge.isFirstLaunch()) {
+    iziToast.success({
+        title: "Succès !",
+        message: "Connexion avec Microsoft réussie",
+        position: "topRight",
+        transitionIn: "fadeInUp"
+    });
+  }
+
   const { VIEWS, URL } = window.bridge.constants;
   const config = await window.bridge.getConfig();
   const user = config.authenticationDatabase[config.selectedAccount];
   const info = await window.bridge.getData(URL.PACIFISTA_INFO);
 
+  if (!info.success) {
+    iziToast.error({
+        title: "Erreur",
+        message: "Impossible de récupérer les informations de Pacifista.",
+        position: "topRight",
+        transitionIn: "fadeInUp"
+    });
+  }
+
   const avatar = document.getElementById("avatar");
   const pseudo = document.getElementById("pseudo");
   const settings = document.getElementById("settings");
   const play = document.getElementById("play");
-  const logout = document.getElementById("logout");
   const shop = document.getElementById("shop");
+  const wiki = document.getElementById("wiki");
+  const discord = document.getElementById("discord");
+  const logout = document.getElementById("logout");
+  const onlinePlayers = document.getElementById("online-players");
+  const serverStatus = document.getElementById("server-status");
 
   avatar.style.backgroundImage = `url('https://mc-heads.net/body/${user.uuid}/right')`;
-  pseudo.innerHTML = user.name;
+  pseudo.textContent = user.name;
 
   play.addEventListener("click", () => {
     window.bridge.play();
+    iziToast.info({
+        title: "Lancement...",
+        message: "Lancement de Minecraft...",
+        position: "topRight",
+        transitionIn: "fadeInUp"
+    });
   });
 
   settings.addEventListener("click", () => {
@@ -27,28 +55,39 @@ window.onload = async function () {
   });
 
   shop.addEventListener("click", () => {
-    window.bridge.openInBrowser("https://pacifista.fr/shop");
+    window.bridge.openInBrowser(URL.PACIFISTA_SHOP);
   });
 
-  info.servers.forEach((server) => {
-    const card = generateServerCard(server);
-    document.getElementById("servers").innerHTML += card;
+  wiki.addEventListener("click", () => {
+    window.bridge.openInBrowser(URL.PACIFISTA_WIKI);
   });
+
+  discord.addEventListener("click", () => {
+    window.bridge.openInBrowser(URL.PACIFISTA_DISCORD);
+  });
+
+  if (info.success) {
+    onlinePlayers.textContent = `${info.onlinePlayers}/${info.playerSlots}`;
+
+    info.servers.forEach(server => {
+      const statusNode = getStatusNode();
+      statusNode.textContent = server.name;
+      statusNode.classList.add(server.online ? "online" : "offline");
+
+      serverStatus.appendChild(statusNode);
+    });
+  } else {
+    onlinePlayers.textContent = "???";
+
+    const statusNode = getStatusNode();
+    statusNode.textContent = "???"
+    serverStatus.appendChild(statusNode);
+  }
 }
 
-function generateServerCard(data) {
-  const status = data.online ? {
-    class: "online",
-    text: "EN LIGNE"
-  } : {
-    class: "offline",
-    text: "HORS LIGNE"
-  };
-  const onlinePlayers = `${data.onlinePlayers}/${data.playerSlots}`;
+function getStatusNode() {
+  const statusNode = document.createElement("p");
+  statusNode.classList.add("status", "outfit");
 
-  return `<div class="card server-card">
-  <h1>${data.name}</h1>
-  <p class="status ${status.class}">${status.text}</p>
-  <p><b>${onlinePlayers}</b> Joueurs Connectés</p>
-</div>`
+  return statusNode;
 }

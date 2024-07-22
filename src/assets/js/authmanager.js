@@ -31,7 +31,6 @@ exports.addMicrosoftAccount = async function (code) {
   }
 
   configManager.setConfig(config);
-  ipcMain.emit(OPCODES.SWITCH_VIEW, VIEWS.APP);
 
   return { success: true };
 }

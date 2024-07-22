@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
 :root {
   --primary-color: #2cafff;
   --secondary-color: #60a3d9;
@@ -6,7 +8,12 @@
   --danger-secondary-color: #c82333;
 
   --success-primary-color: #28a745;
-  --success-secondary-color: #218838 ;
+  --success-secondary-color: #218838;
+}
+
+.iziToast-title,
+.iziToast-message {
+  font-family: "Outfit", sans-serif;
 }
 
 body {
@@ -19,15 +26,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.outfit {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: bold;
+}
+
+.primary {
+  color: var(--primary-color);
+}
+
 .btn {
   color: #333;
-  font-size: 18px;
   padding: 10px 20px;
-  margin: 0 10px;
+  margin: 5px 5px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-family: "Outfit", sans-serif;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.btn-invisible {
+  background: none;
+}
+
+.btn-invisible:hover {
+  background-color: var(--secondary-color);
 }
 
 .btn-primary {
