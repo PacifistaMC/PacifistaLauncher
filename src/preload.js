@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld("bridge", {
   switchView: (view) => ipcRenderer.send(constants.OPCODES.SWITCH_VIEW, view),
   getConfig: () => ipcRenderer.invoke(constants.OPCODES.GET_CONFIG),
   setConfig: (newConfig) => ipcRenderer.send(constants.OPCODES.SET_CONFIG, newConfig),
+  isFirstLaunch: () => ipcRenderer.invoke(constants.OPCODES.IS_FIRST_LAUNCH),
   play: () => ipcRenderer.send(constants.OPCODES.PLAY),
   openInBrowser: (url) => shell.openExternal(url),
   getData: (url, method) => requests.getData(url, method),

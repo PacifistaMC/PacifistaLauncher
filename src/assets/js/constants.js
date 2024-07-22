@@ -2,7 +2,10 @@ exports.AZURE_CLIENT_ID = "fcc03b46-3ce2-4666-a548-d2a34b7a8815";
 exports.DISCORD_RPC_CLIENT_ID = "1175831066976735332"; // Discord app's client ID. Test purposes. App owner: Discord @gamecreep35 & GitHub @iGameCreep
 
 exports.URL = {
-  PACIFISTA_INFO: "http://beta.pacifista.fr:25550/",
+  PACIFISTA_INFO: "https://api.pacifista.fr/essentials/status",
+  PACIFISTA_SHOP: "https://pacifista.fr/shop",
+  PACIFISTA_WIKI: "https://pacifista.fr/wiki",
+  PACIFISTA_DISCORD: "https://discord.gg/3smswFCBky"
 }
 
 // Opcodes
@@ -11,6 +14,7 @@ exports.OPCODES = {
   LOGOUT: "MSFT_AUTH_LOGOUT",
   GET_CONFIG: "GET_CONFIG",
   SET_CONFIG: "SET_CONFIG",
+  IS_FIRST_LAUNCH: "IS_FIRST_LAUNCH",
   SWITCH_VIEW: "SWITCH_VIEW",
   PLAY: "PLAY",
   MC_STARTED: "MC_STARTED",

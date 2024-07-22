@@ -20,9 +20,10 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     title: "Pacifista Launcher",
     icon: APP_ICON_PATH,
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     frame: true,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -73,6 +74,10 @@ ipcMain.handle(OPCODES.GET_CONFIG, () => {
 
 ipcMain.on(OPCODES.SET_CONFIG, (_event, newConfig) => {
   configManager.setConfig(JSON.parse(newConfig));
+});
+
+ipcMain.handle(OPCODES.IS_FIRST_LAUNCH, () => {
+  return configManager.isFirstLaunch();
 });
 
 ipcMain.on(OPCODES.PLAY, () => {
