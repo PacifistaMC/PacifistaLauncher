@@ -1,33 +1,44 @@
 body {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .settings-container {
-  background-color: var(--secondary-color);
+  background-color: rgba(44, 175, 255, 0.2);
   border-radius: 25px;
   display: flex;
   height: 30rem;
-  max-width: 50rem;
-  margin: 0 auto;
+  width: 80%;
+  margin: 10px;
   padding: 20px;
 }
 
-.minecraft-settings {
-  flex: 1;
-  max-width: 50%;
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  position: relative;
 }
 
-.account-settings {
-  flex: 1;
-  max-width: 50%;
+label, span, p, .title {
+  font-family: "Outfit", sans-serif;
+  font-size: large;
 }
 
 .title {
   text-align: center;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: x-large;
+  font-weight: bold;
   margin-bottom: 20px;
+}
+
+.main-settings {
+  flex: 1;
+  max-width: 50%;
 }
 
 .setting {
@@ -50,6 +61,11 @@ label {
   border: none;
   width: 50px;
   padding: 5px;
+  font-family: "Outfit", sans-serif;
+}
+
+.resolution-input input:focus-visible {
+  outline-color: var(--primary-color);
 }
 
 .separator {
@@ -94,7 +110,7 @@ label {
 }
 
 input:checked + .slider {
-  background-color: #009688;
+  background-color: var(--primary-color);
 }
 
 input:checked + .slider:before {
@@ -120,11 +136,12 @@ input:checked + .slider:before {
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 10px;
   max-height: 10rem;
 }
 
 .user-info {
+  position: relative;
   display: flex;
   align-items: center;
   flex: 1;
@@ -142,28 +159,14 @@ input:checked + .slider:before {
 
 .user-details {
   flex: 1;
-  margin-left: 10px;
 }
 
 .username {
-  font-weight: 600;
-}
-
-.user-uuid {
-  margin-top: 10px;
+  margin-left: 5px;
   font-weight: 600;
 }
 
 .microsoft-logo {
-  top: 0;
+  position: absolute;
   right: 0;
-  margin: 10px;
-}
-
-.btn-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  position: relative;
 }
