@@ -1,12 +1,13 @@
 const { ipcMain } = require("electron");
 const { AZURE_CLIENT_ID, OPCODES, VIEWS, ERRORS } = require("./constants");
 const { Auth, assets } = require('msmc');
+const path = require('path');
 const { getLogger } = require("./logger");
 const configManager = require("./configmanager");
 
 const logger = getLogger("Microsoft Authenticator");
 
-const lexiPack = assets.loadLexiPack("./src/assets/lexiPacks/french.json");
+const lexiPack = assets.loadLexiPack(path.join(__dirname, "../lexiPacks/french.json"));
 
 const auth = new Auth({
   client_id: AZURE_CLIENT_ID,
