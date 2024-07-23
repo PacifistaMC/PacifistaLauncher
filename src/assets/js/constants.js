@@ -1,6 +1,10 @@
 exports.AZURE_CLIENT_ID = "fcc03b46-3ce2-4666-a548-d2a34b7a8815";
 exports.DISCORD_RPC_CLIENT_ID = "1175831066976735332"; // Discord app's client ID. Test purposes. App owner: Discord @gamecreep35 & GitHub @iGameCreep
 
+exports.LOGS = {
+  MAX_FILES: 20
+}
+
 exports.URL = {
   PACIFISTA_INFO: "https://api.pacifista.fr/essentials/status",
   PACIFISTA_SHOP: "https://pacifista.fr/shop",

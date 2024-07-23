@@ -10,15 +10,18 @@ const { OPCODES } = require('./constants');
 
 const logger = getLogger("Minecraft");
 const launcher = new Client();
-launcher.on('debug', (info) => logger.debug(info));
+
 launcher.on('data', (info) => {
   const config = configManager.getConfig();
   const selectedAccount = config.authenticationDatabase[config.selectedAccount];
-  if (info.includes(selectedAccount.name)) ipcMain.emit(OPCODES.MC_STARTED);
-  logger.info(info);
+  if (info.includes(selectedAccount.name)) {
+    ipcMain.emit(OPCODES.MC_STARTED);
+    logger.info("Started Minecraft");
+  }
 });
 launcher.on('close', () => {
   ipcMain.emit(OPCODES.MC_STOPPED);
+  logger.info("Stopped Minecraft");
   rpc.setActivity({
     details: "Dans le lanceur",
     startTimestamp: new Date(),
