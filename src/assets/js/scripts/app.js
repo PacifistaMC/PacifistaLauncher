@@ -1,6 +1,6 @@
 window.onload = async function () {
   if (await window.bridge.isFirstLaunch()) {
-    iziToast.success({
+    toast.success({
         title: "Succès !",
         message: "Connexion avec Microsoft réussie",
         position: "topRight",
@@ -14,7 +14,7 @@ window.onload = async function () {
   const info = await window.bridge.getData(URL.PACIFISTA_INFO);
 
   if (!info.success) {
-    iziToast.error({
+    toast.error({
         title: "Erreur",
         message: "Impossible de récupérer les informations de Pacifista.",
         position: "topRight",
@@ -38,7 +38,7 @@ window.onload = async function () {
 
   play.addEventListener("click", () => {
     window.bridge.play();
-    iziToast.info({
+    toast.info({
         title: "Lancement...",
         message: "Lancement de Minecraft...",
         position: "topRight",
