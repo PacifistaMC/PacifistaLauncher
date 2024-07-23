@@ -1,12 +1,10 @@
 window.onload = async function () {
-  if (await window.bridge.isFirstLaunch()) {
-    toast.success({
-        title: "Succès !",
-        message: "Connexion avec Microsoft réussie",
-        position: "topRight",
-        transitionIn: "fadeInUp"
-    });
-  }
+  toast.success({
+    title: "Succès !",
+    message: "Connexion avec Microsoft réussie",
+    position: "topRight",
+    transitionIn: "fadeInUp"
+  });
 
   const { VIEWS, URL } = window.bridge.constants;
   const config = await window.bridge.getConfig();

@@ -76,10 +76,6 @@ ipcMain.on(OPCODES.SET_CONFIG, (_event, newConfig) => {
   configManager.setConfig(JSON.parse(newConfig));
 });
 
-ipcMain.handle(OPCODES.IS_FIRST_LAUNCH, () => {
-  return configManager.isFirstLaunch();
-});
-
 ipcMain.on(OPCODES.PLAY, () => {
   javaUtils.fullJavaCheck();
   launcher.launchGame();
