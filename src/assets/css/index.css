@@ -1,20 +1,20 @@
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .login {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
 }
 
 svg {
-  fill: #fff;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+    fill: #fff;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
 }

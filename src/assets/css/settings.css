@@ -1,172 +1,175 @@
 body {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .settings-container {
-  background-color: rgba(44, 175, 255, 0.2);
-  border-radius: 25px;
-  display: flex;
-  height: 30rem;
-  width: 80%;
-  margin: 10px;
-  padding: 20px;
+    background-color: rgba(44, 175, 255, 0.2);
+    border-radius: 25px;
+    display: flex;
+    height: 30rem;
+    width: 80%;
+    margin: 10px;
+    padding: 20px;
 }
 
 .btn-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
 }
 
-label, span, p, .title {
-  font-family: "Outfit", sans-serif;
-  font-size: large;
+label,
+span,
+p,
+.title {
+    font-family: "Outfit", sans-serif;
+    font-size: large;
 }
 
 .title {
-  text-align: center;
-  font-size: x-large;
-  font-weight: bold;
-  margin-bottom: 20px;
+    text-align: center;
+    font-size: x-large;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .main-settings {
-  flex: 1;
-  max-width: 50%;
+    flex: 1;
+    max-width: 50%;
 }
 
 .setting {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 5px;
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
 
 .resolution-input {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .resolution-input input {
-  border-radius: 5px;
-  border: none;
-  width: 50px;
-  padding: 5px;
-  font-family: "Outfit", sans-serif;
+    border-radius: 5px;
+    border: none;
+    width: 50px;
+    padding: 5px;
+    font-family: "Outfit", sans-serif;
 }
 
 .resolution-input input:focus-visible {
-  outline-color: var(--primary-color);
+    outline-color: var(--primary-color);
 }
 
 .separator {
-  margin: 0 10px;
+    margin: 0 10px;
 }
 
 .switch {
-  display: inline-block;
-  position: relative;
-  width: 60px;
-  height: 34px;
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 34px;
 }
 
 .switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
 }
 
 input:checked + .slider {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 input:checked + .slider:before {
-  transform: translateX(26px);
+    transform: translateX(26px);
 }
 
 .ram-settings {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .ram-input input[type="range"] {
-  width: 100%;
+    width: 100%;
 }
 
 #allocated-ram-value {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .user-card {
-  flex: 1;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  max-height: 10rem;
+    flex: 1;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    max-height: 10rem;
 }
 
 .user-info {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
 }
 
 .user-avatar {
-  width: 3rem;
-  height: 3rem;
-  background-color: #444;
-  background-size: cover;
-  border: 2px solid var(--primary-color);
-  border-radius: 50%;
-  margin: 2px auto;
+    width: 3rem;
+    height: 3rem;
+    background-color: #444;
+    background-size: cover;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 2px auto;
 }
 
 .user-details {
-  flex: 1;
+    flex: 1;
 }
 
 .username {
-  margin-left: 5px;
-  font-weight: 600;
+    margin-left: 5px;
+    font-weight: 600;
 }
 
 .microsoft-logo {
-  position: absolute;
-  right: 0;
+    position: absolute;
+    right: 0;
 }

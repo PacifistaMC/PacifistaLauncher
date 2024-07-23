@@ -1,69 +1,69 @@
 body {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  box-sizing: border-box;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
 .section {
-  flex: 1;
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .left-section {
-  justify-content: flex-start;
-  background-color: rgba(44, 175, 255, 0.2);
-  border-right: 3px solid var(--primary-color);
+    justify-content: flex-start;
+    background-color: rgba(44, 175, 255, 0.2);
+    border-right: 3px solid var(--primary-color);
 
-  max-width: 30%;
+    max-width: 30%;
 }
 
 .right-section {
-  position: relative;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    align-items: center;
+    justify-content: center;
 }
 
 .user-avatar {
-  width: 100px;
-  height: 100px;
-  background-color: #444;
-  background-size: cover;
-  border: 2px solid var(--primary-color);
-  border-radius: 50%;
-  margin: 20px auto;
+    width: 100px;
+    height: 100px;
+    background-color: #444;
+    background-size: cover;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 20px auto;
 }
 
 h1 {
-  color: white;
-  margin: 2px;
+    color: white;
+    margin: 2px;
 }
 
 .title {
-  font-size: xx-large;
+    font-size: xx-large;
 }
 
 .server-status {
-  position: absolute;
-  top: 5%;
-  display: flex;
-  flex-direction: row;
+    position: absolute;
+    top: 5%;
+    display: flex;
+    flex-direction: row;
 }
 
 .status {
-  color: white;
-  font-size: large;
-  margin: 5px;
+    color: white;
+    font-size: large;
+    margin: 5px;
 }
 
 .online {
-  color: var(--success-primary-color);
+    color: var(--success-primary-color);
 }
-  
+
 .offline {
-  color: var(--danger-primary-color);
+    color: var(--danger-primary-color);
 }
