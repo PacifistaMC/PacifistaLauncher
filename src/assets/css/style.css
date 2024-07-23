@@ -21,7 +21,6 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -37,6 +36,11 @@ body {
   color: var(--primary-color);
 }
 
+.logo {
+  width: 150px;
+  height: 150px;
+}
+
 .btn {
   color: black;
   padding: 10px 20px;
@@ -48,6 +52,19 @@ body {
   font-family: "Outfit", sans-serif;
   font-weight: bold;
   font-size: larger;
+}
+
+.btn:focus-visible {
+  outline-color: var(--primary-color);
+}
+
+.btn-white {
+  color: #333;
+  background-color: white;
+}
+
+.btn-white:hover {
+    background-color: wheat;
 }
 
 .btn-invisible {

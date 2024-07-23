@@ -24,6 +24,7 @@ async function createWindow() {
     height: 800,
     frame: true,
     autoHideMenuBar: true,
+    resizable: false,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -31,8 +32,7 @@ async function createWindow() {
   });
 
   let pagePath;
-  if (configManager.isFirstLaunch()) pagePath = "pages/welcome.html";
-  else if (await refreshAccount()) pagePath = "pages/app.html"
+  if (await refreshAccount()) pagePath = "pages/app.html";
   else pagePath = "pages/index.html";
 
   mainWindow.loadURL(path.join(__dirname, pagePath));
