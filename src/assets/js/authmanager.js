@@ -27,6 +27,7 @@ exports.addMicrosoftAccount = async function (code) {
     } catch (err) {
         const errMsg = lexiPack[err] ?? "Erreur inconnue lors de la connexion.";
         logger.error(errMsg);
+        logger.error(err);
         ipcMain.emit(OPCODES.ERROR, errMsg)
         return { success: false };
     }

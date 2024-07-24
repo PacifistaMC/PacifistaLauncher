@@ -12,6 +12,8 @@ const { ERRORS } = require('./constants');
 
 const logger = getLogger("Files Utils");
 
+const ERROR_DL_FILE_MSG = "Une erreur est survenue lors du téléchargement du fichier: ";
+
 exports.downloadFile = function (url, downloadPath) {
     return new Promise((resolve, reject) => {
         axios.default({
@@ -24,17 +26,17 @@ exports.downloadFile = function (url, downloadPath) {
 
             fileStream.on('finish', () => {
                 fileStream.close();
-                logger.info("Successfully downloaded file");
+                logger.info("Ficher téléchargé avec succès.");
                 resolve();
             });
 
             fileStream.on('error', (err) => {
-                logger.error("An error has occurred while downloading the file: " + err);
+                logger.error(ERROR_DL_FILE_MSG + err);
                 ipcMain.emit(ERRORS.FILE_DOWNLOAD_FAILED + err);
                 reject(err);
             });
         }).catch((err) => {
-            logger.error("Error downloading the file: " + err);
+            logger.error(ERROR_DL_FILE_MSG + err);
             ipcMain.emit(ERRORS.FILE_DOWNLOAD_FAILED + err);
             reject(err);
         });
@@ -48,7 +50,7 @@ exports.validateInstallation = async function (filePath, algo, hash) {
         const calculatedHash = await calculateHash(filePath, algo);
         return calculatedHash === hash;
     } catch (err) {
-        logger.error("Failed to calculate hash. Error: " + err);
+        logger.error("Impossible de calculer le hash. Error: " + err);
         ipcMain.emit(ERRORS.FILE_HASH_CALCULATING_FAILED);
     }
     return false;
@@ -80,13 +82,13 @@ async function extractZip(zipPath) {
     });
 
     try {
-        logger.info(`Extracting ${zipPath} ...`);
+        logger.info(`Extraction de ${zipPath} ...`);
         await zip.extract(null, path.dirname(zipPath));
-        logger.info(`Removing ${zipPath} ...`);
+        logger.info(`Suppression de ${zipPath} ...`);
         await fs_extra.remove(zipPath);
-        logger.info(`Successfully unzipped ${zipPath}`);
+        logger.info(`Extraction ZIP réussie: ${zipPath}`);
     } catch (err) {
-        logger.info("Zip extraction failed. Error: " + err);
+        logger.info("Extraction ZIP ratée. Error: " + err);
     } finally {
         await zip.close();
     }

@@ -10,6 +10,7 @@ const { ipcMain } = require('electron');
 
 const logger = getLogger("Java Utils");
 
+//TODO: Endpoint API to get real version
 const desiredJavaVersion = '17';
 
 exports.fullJavaCheck = async function () {
@@ -22,23 +23,28 @@ exports.fullJavaCheck = async function () {
         else distribution = await getLatestAdoptium();
 
         try {
-            logger.info("Downloading Java 17 archive...");
+            logger.info("Installation de l'archive Java...");
             await fileUtils.downloadFile(distribution.url, distribution.path);
-            logger.info("Verifying installation...");
+            logger.info("Vérification de l'installation...");
             await fileUtils.validateInstallation(distribution.path, distribution.algo, distribution.hash);
-            logger.info("Extracting archive...");
+            logger.info("Extraction de l'archive...");
             await fileUtils.extractFile(distribution.path);
         } catch (err) {
             logger.error(ERRORS.JAVA_UNABLE_TO_INSTALL + err);
             ipcMain.emit(ERRORS.JAVA_UNABLE_TO_INSTALL + err);
         }
 
-        logger.info("Successfully installed Java 17.");
+        logger.info("Java a bien été installé.");
     } else {
-        logger.info("Java 17 is installed on this system.");
+        logger.info("Java est déjà installé.");
     }
 }
 
+/**
+ * Vérifie si Java est installé sur la machine de l'utilisateur avec la bonne version.
+ * Le Regex récupère la version de Java dans la réponse de la commande "java -version".
+ * @returns {boolean} - Java est déjà installé avec la bonne version.
+ */
 function hasJavaOnCorrectVersion() {
     return new Promise((resolve) => {
         const result = spawn('java', ['-version']);
@@ -94,7 +100,7 @@ function getPropertiesOfOS() {
 async function getLatestAdoptium() {
     const opts = getPropertiesOfOS();
 
-    const url = `https://api.adoptium.net/v3/assets/latest/${desiredJavaVersion}/hotspot?vendor=eclipse&os=${opts.sanitizedOS}&image_type=jdk&architecture=${opts.arch}`;
+    const url = `https://api.adoptium.net/v3/assets/latest/${desiredJavaVersion}/hotspot?vendor=eclipse&os=${opts.sanitizedOS}&image_type=jre&architecture=${opts.arch}`;
     try {
         const res = await axios.default.get(url);
 
@@ -109,15 +115,15 @@ async function getLatestAdoptium() {
                 path: path.join(getLauncherRuntimeDir(), binaryPackage.name)
             }
         } else if (res.data.length <= 0) {
-            logger.error(`Failed to find a suitable Adoptium binary for JDK ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}).`);
+            logger.error(`Impossible de récupérer un JRE Adoptium. Recherche: ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}).`);
             ipcMain.emit(ERRORS.JAVA_NO_SUITABLE_BINARY);
             return null;
         } else {
-            logger.error(`Error while retrieving latest Adoptium JDK ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}): ${res.status} ${res.statusText ?? ''}`);
+            logger.error(`Une erreur est survenue lors de la réception du JRE Adoptium: ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}): ${res.status} ${res.statusText ?? ''}`);
             ipcMain.emit(ERRORS.JAVA_UNABLE_TO_GET_VERSION);
         }
     } catch (err) {
-        logger.error("Failed to install latest Adoptium. Error: " + err);
+        logger.error("Impossible d'installer un JRE Adoptium. Erreur: " + err);
         ipcMain.emit(ERRORS.JAVA_FAILED_TO_INSTALL + err);
         return null;
     }
@@ -126,7 +132,7 @@ async function getLatestAdoptium() {
 async function getLatestCorretto() {
     const opts = getPropertiesOfOS();
 
-    const fileName = `amazon-corretto-${desiredJavaVersion}-${opts.arch}-${opts.sanitizedOS}-jdk.${opts.extension}`;
+    const fileName = `amazon-corretto-${desiredJavaVersion}-${opts.arch}-${opts.sanitizedOS}-jre.${opts.extension}`;
     const url = `https://corretto.aws/downloads/latest/${fileName}`;
     const md5url = `https://corretto.aws/downloads/latest_checksum/${fileName}`;
 
@@ -144,12 +150,12 @@ async function getLatestCorretto() {
                 path: path.join(getLauncherRuntimeDir(), fileName)
             }
         } else {
-            logger.error(`Error while retrieving latest Corretto JDK ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}): ${res.status} ${res.statusText ?? ''}`);
+            logger.error(`Une erreur est survenue lors de la réception du JRE Corretto: ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}): ${res.status} ${res.statusText ?? ''}`);
             ipcMain.emit(ERRORS.JAVA_UNABLE_TO_GET_VERSION);
             return null;
         }
     } catch (err) {
-        logger.error("Failed to install latest Corretto. Error: " + err);
+        logger.error("Impossible d'installer un JRE Corretto. Erreur: " + err);
         ipcMain.emit(ERRORS.JAVA_FAILED_TO_INSTALL + err);
         return null;
     }

@@ -15,7 +15,7 @@ const launcherDir = app.getPath("userData");
 const configPath = path.join(launcherDir, "config.json");
 const firstLaunch = !fs.existsSync(configPath);
 
-if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
+fs.ensureDirSync(dataPath);
 
 let config;
 
@@ -50,23 +50,23 @@ const DEFAULT_CONFIG = {
         version: "1.20.1",
         type: "release",
     }
-};
+}
 
 function getAbsoluteMinRAM() {
     const mem = os.totalmem();
     if (mem >= 8 * 1073741824) return 4;
     else if (mem >= 6 * 1073741824) return 3;
     else return 2;
-};
+}
 
 function getAbsoluteMaxRAM() {
     const fullRam = os.totalmem() / 1073741824;
     return Math.round(Math.round((fullRam + Number.EPSILON) * 100) / 100);
-};
+}
 
 exports.save = function () {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), { encoding: "utf-8" });
-};
+}
 
 exports.load = function () {
     let doLoad = true;
@@ -96,15 +96,15 @@ exports.load = function () {
         }
     }
     logger.info("Successfully Loaded");
-};
+}
 
 exports.isFirstLaunch = function () {
     return firstLaunch;
-};
+}
 
 exports.getConfig = function () {
     return config;
-};
+}
 
 exports.setConfig = function (newConfig) {
     config = newConfig;
@@ -137,20 +137,15 @@ exports.validateKeySet = function (srcObj, destObj) {
         }
     }
     return destObj;
-};
+}
 
 exports.getDirectories = function () {
-    const instanceDir = ensureDirectory(path.join(dataPath, "instances", config.server.version));
+    const instanceDir = fs.ensureDirSync(path.join(dataPath, "instances", config.server.version));
     return {
         data: dataPath,
         instance: instanceDir,
-        runtime: ensureDirectory(path.join(dataPath, "runtime")),
-        mods: ensureDirectory(path.join(instanceDir, "mods")),
+        runtime: fs.ensureDirSync(path.join(dataPath, "runtime")),
+        mods: fs.ensureDirSync(path.join(instanceDir, "mods")),
         launcher: launcherDir
     }
-};
-
-function ensureDirectory(directory) {
-    if (!fs.existsSync(directory)) fs.mkdirSync(directory, { recursive: true });
-    return directory;
-};
+}

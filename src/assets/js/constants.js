@@ -12,7 +12,6 @@ exports.URL = {
     PACIFISTA_DISCORD: "https://discord.gg/3smswFCBky"
 }
 
-// Opcodes
 exports.OPCODES = {
     LOGIN: "MSFT_AUTH_LOGIN",
     LOGOUT: "MSFT_AUTH_LOGOUT",
@@ -26,24 +25,22 @@ exports.OPCODES = {
     ERROR: "ERROR",
 };
 
-// Reply types for REPLY opcode.
 exports.REPLY_TYPES = {
     SUCCESS: "REPLY_SUCCESS",
     ERROR: "REPLY_ERROR",
 };
 
-// Error types for ERROR reply.
 exports.ERRORS = {
     MSFT_ALREADY_OPEN: "La fenêtre de connexion est déjà ouverte !",
     MSFT_NOT_FINISHED: "La connexion en cours n'est pas terminée !",
     MSFT_OTHER: "Une erreur inconnue est survenue.",
     MSFT_UNABLE_TO_REFRESH: "Impossible de reconnecter le compte enregistré.",
 
-    RCP_NOT_LOADED: "Impossible de charger la Rich Presence Discord.",
+    RCP_NOT_LOADED: "Impossible de charger l'activité Discord.",
 
-    JAVA_NOT_INSTALLED: "Java 17 isn't installed on this system. Starting installation...",
-    JAVA_UNABLE_TO_INSTALL: "Impossible d'installer Java 17. Erreur: ",
-    JAVA_NO_SUITABLE_BINARY: "Impossible de trouver une version de java à installer.",
+    JAVA_NOT_INSTALLED: "La version de Java requise n'est pas installée. Installation en cours...",
+    JAVA_UNABLE_TO_INSTALL: "Impossible d'installer Java. Erreur: ",
+    JAVA_NO_SUITABLE_BINARY: "Impossible de trouver une version de Java à installer.",
     JAVA_FAILED_TO_INSTALL: "Erreur lors de l'installation de Java: ",
     JAVA_UNABLE_TO_GET_VERSION: "Impossible de récupérer une version de Java.",
 
@@ -57,7 +54,3 @@ exports.VIEWS = {
     APP: "pages/app.html",
     SETTINGS: "pages/settings.html",
 };
-
-exports.TOAST_OPTIONS = {
-    position: ""
-}

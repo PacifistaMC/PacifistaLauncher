@@ -14,14 +14,16 @@ const launcher = new Client();
 launcher.on('data', (info) => {
     const config = configManager.getConfig();
     const selectedAccount = config.authenticationDatabase[config.selectedAccount];
+
     if (info.includes(selectedAccount.name)) {
         ipcMain.emit(OPCODES.MC_STARTED);
-        logger.info("Started Minecraft");
+        logger.info("Minecraft s'est lancé.");
     }
 });
+
 launcher.on('close', () => {
     ipcMain.emit(OPCODES.MC_STOPPED);
-    logger.info("Stopped Minecraft");
+    logger.info("Minecraft s'est arrêté.");
     rpc.setActivity({
         details: "Dans le lanceur",
         startTimestamp: new Date(),
@@ -78,6 +80,7 @@ async function installMinecraft(config) {
 async function installMods() {
     const modsPath = configManager.getDirectories().mods;
     const mods = {
+        // TODO: Replace this example mod with one retreived from an API endpoint.
         "voicechat-fabric-1.20.1-2.4.28.jar": "https://cdn.modrinth.com/data/9eGKb6K1/versions/p8zEH7oT/voicechat-fabric-1.20.1-2.4.28.jar"
     };
 
