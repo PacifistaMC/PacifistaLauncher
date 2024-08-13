@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const { getLogger } = require('./logger');
 const fs = require('fs');
+const fs_extra = require('fs-extra');
 const axios = require('axios');
 const path = require('path');
 const configManager = require('./configmanager');
@@ -18,9 +19,11 @@ exports.fullJavaCheck = async function () {
         logger.error(ERRORS.JAVA_NOT_INSTALLED);
         ipcMain.emit(ERRORS.JAVA_NOT_INSTALLED);
 
-        let distribution;
-        if (process.platform === "darwin") distribution = await getLatestCorretto();
-        else distribution = await getLatestAdoptium();
+        // Utilisation de Adoptium prioritairement: plus de choix pour les JRE. Si jamais future utilisation de Corretto, modifier le code pour récupérer et sauvegarder l'exécutable.
+        // let distribution;
+        // if (process.platform === "darwin") distribution = await getLatestCorretto();
+        // else distribution = await getLatestAdoptium();
+        const distribution = await getLatestAdoptium();
 
         try {
             logger.info("Installation de l'archive Java...");
@@ -29,6 +32,12 @@ exports.fullJavaCheck = async function () {
             await fileUtils.validateInstallation(distribution.path, distribution.algo, distribution.hash);
             logger.info("Extraction de l'archive...");
             await fileUtils.extractFile(distribution.path);
+
+            const javaPath = path.join(distribution.finalPath, "bin", "java.exe");
+            const config = configManager.getConfig();
+            config.javaConfig.executable = javaPath;
+            config.javaConfig.version = desiredJavaVersion;
+            configManager.setConfig(config);
         } catch (err) {
             logger.error(ERRORS.JAVA_UNABLE_TO_INSTALL + err);
             ipcMain.emit(ERRORS.JAVA_UNABLE_TO_INSTALL + err);
@@ -46,6 +55,9 @@ exports.fullJavaCheck = async function () {
  * @returns {boolean} - Java est déjà installé avec la bonne version.
  */
 function hasJavaOnCorrectVersion() {
+    const { javaConfig } = configManager.getConfig();
+    if (javaConfig.version == desiredJavaVersion && fs.existsSync(javaConfig.executable)) return true;
+
     return new Promise((resolve) => {
         const result = spawn('java', ['-version']);
 
@@ -105,14 +117,17 @@ async function getLatestAdoptium() {
         const res = await axios.default.get(url);
 
         if (res.status === 200 && res.data.length > 0) {
-            const binaryPackage = res.data[0].binary.package;
+            const data = res.data[0];
+            const binary = data.binary;
+            const binaryPackage = binary.package;
             return {
                 url: binaryPackage.link,
                 size: binaryPackage.size,
                 id: binaryPackage.name,
                 hash: binaryPackage.checksum,
                 algo: "sha256",
-                path: path.join(getLauncherRuntimeDir(), binaryPackage.name)
+                path: path.join(getLauncherRuntimeDir(), binaryPackage.name),
+                finalPath: path.join(getLauncherRuntimeDir(), `${data.release_name}-${binary.image_type}`)
             }
         } else if (res.data.length <= 0) {
             logger.error(`Impossible de récupérer un JRE Adoptium. Recherche: ${desiredJavaVersion} (${opts.sanitizedOS} ${opts.arch}).`);
@@ -164,7 +179,7 @@ async function getLatestCorretto() {
 function getLauncherRuntimeDir() {
     const runtimeDirPath = configManager.getDirectories().runtime;
     const runtimePath = path.join(runtimeDirPath, process.arch);
-    if (!fs.existsSync(runtimePath)) fs.mkdirSync(runtimePath);
+    fs_extra.ensureDirSync(runtimePath)
 
     return runtimePath;
 }

@@ -10,12 +10,10 @@ const sysRoot =
     (process.platform == "darwin"
         ? process.env.HOME + "/Library/Application Support"
         : process.env.HOME);
-const dataPath = path.join(sysRoot, ".pacifista");
+const dataPath = ensureDir(path.join(sysRoot, ".pacifista"));
 const launcherDir = app.getPath("userData");
 const configPath = path.join(launcherDir, "config.json");
 const firstLaunch = !fs.existsSync(configPath);
-
-fs.ensureDirSync(dataPath);
 
 let config;
 
@@ -42,7 +40,8 @@ const DEFAULT_CONFIG = {
         minRAM: getAbsoluteMinRAM(),
         maxRAM: getAbsoluteMaxRAM(),
         allocatedRAM: getAbsoluteMinRAM(),
-        executable: "",
+        version: null,
+        executable: null,
         jvmOptions: [],
     },
     server: {
@@ -140,12 +139,18 @@ exports.validateKeySet = function (srcObj, destObj) {
 }
 
 exports.getDirectories = function () {
-    const instanceDir = fs.ensureDirSync(path.join(dataPath, "instances", config.server.version));
+    const instanceDir = ensureDir(path.join(dataPath, "instances", config.server.version));
+
     return {
         data: dataPath,
         instance: instanceDir,
-        runtime: fs.ensureDirSync(path.join(dataPath, "runtime")),
-        mods: fs.ensureDirSync(path.join(instanceDir, "mods")),
+        runtime: ensureDir(path.join(dataPath, "runtime")),
+        mods: ensureDir(path.join(instanceDir, "mods")),
         launcher: launcherDir
     }
+}
+
+function ensureDir(path) {
+    fs.ensureDirSync(path);
+    return path;
 }

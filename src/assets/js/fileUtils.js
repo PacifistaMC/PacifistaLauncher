@@ -85,7 +85,7 @@ async function extractZip(zipPath) {
         logger.info(`Extraction de ${zipPath} ...`);
         await zip.extract(null, path.dirname(zipPath));
         logger.info(`Suppression de ${zipPath} ...`);
-        await fs_extra.remove(zipPath);
+        fs_extra.removeSync(zipPath);
         logger.info(`Extraction ZIP réussie: ${zipPath}`);
     } catch (err) {
         logger.info("Extraction ZIP ratée. Error: " + err);

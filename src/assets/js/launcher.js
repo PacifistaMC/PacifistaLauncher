@@ -35,7 +35,7 @@ exports.launchGame = async function () {
     await installMinecraft(config);
     await installMods();
 
-    launcher.launch({
+    const opts = {
         authorization: config.authenticationDatabase[config.selectedAccount],
         root: configManager.getDirectories().instance,
         version: {
@@ -58,7 +58,12 @@ exports.launchGame = async function () {
         overrides: {
             detached: config.settings.game.launchDetached,
         }
-    });
+    }
+
+    const javaExec = config.javaConfig.executable;
+    if (javaExec) opts.javaPath = javaExec;
+
+    launcher.launch(opts);
 
     rpc.setActivity({
         details: "En jeu",
