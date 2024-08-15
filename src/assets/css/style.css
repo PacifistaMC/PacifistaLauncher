@@ -1,47 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
 :root {
-  --primary-color: #2cafff;
-  --secondary-color: #60a3d9;
+    --primary-color: #2cafff;
+    --secondary-color: #60a3d9;
 
-  --danger-primary-color: #dc3545;
-  --danger-secondary-color: #c82333;
+    --danger-primary-color: #dc3545;
+    --danger-secondary-color: #c82333;
 
-  --success-primary-color: #28a745;
-  --success-secondary-color: #218838 ;
+    --success-primary-color: #28a745;
+    --success-secondary-color: #218838;
+}
+
+.iziToast-title,
+.iziToast-message {
+    font-family: "Outfit", sans-serif;
 }
 
 body {
-  background-image: url("../images/bg_build.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    background-image: url("../images/bg_build.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.outfit {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: bold;
+}
+
+.primary {
+    color: var(--primary-color);
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
 }
 
 .btn {
-  color: #333;
-  font-size: 18px;
-  padding: 10px 20px;
-  margin: 0 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    color: black;
+    padding: 10px 20px;
+    margin: 5px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: "Outfit", sans-serif;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.btn:focus-visible {
+    outline-color: var(--primary-color);
+}
+
+.btn-white {
+    color: #333;
+    background-color: white;
+}
+
+.btn-white:hover {
+    background-color: wheat;
+}
+
+.btn-invisible {
+    background: none;
+}
+
+.btn-invisible:hover {
+    background-color: var(--secondary-color);
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-  background-color: var(--secondary-color);
+    background-color: var(--secondary-color);
 }
 
 .btn-danger {
-  background-color: var(--danger-primary-color);
+    background-color: var(--danger-primary-color);
 }
 
 .btn-danger:hover {
-  background-color: var(--danger-secondary-color);
+    background-color: var(--danger-secondary-color);
 }

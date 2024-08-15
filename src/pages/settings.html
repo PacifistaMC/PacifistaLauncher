@@ -1,95 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../assets/css/toast.css" />
-    <link rel="stylesheet" href="../assets/css/style.css" />
-    <link rel="stylesheet" href="../assets/css/settings.css" />
-    <script src="../assets/js/scripts/toast.js"></script>
-    <script src="../assets/js/scripts/script.js"></script>
-    <script src="../assets/js/scripts/settings.js"></script>
-  </head>
-  <body>
-    <div class="settings-container">
-      <div class="minecraft-settings">
-        <h1 class="title">Minecraft</h1>
-        <div class="setting">
-          <label for="resolution">Résolution:</label>
-          <div class="resolution-input">
-            <input type="text" id="resolution-width" />
-            <span class="separator">x</span>
-            <input type="text" id="resolution-height" />
-          </div>
-        </div>
-        <div class="setting">
-          <label for="fullscreen">Plein Écran:</label>
-          <label class="switch">
-            <input type="checkbox" id="fullscreen" />
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="setting">
-          <label for="detached">Détacher Minecraft Du Launceur:</label>
-          <label class="switch">
-            <input type="checkbox" id="detached" />
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="setting">
-          <label for="hideLauncherOnGameStart">Cacher Le Lanceur Lorsque Minecraft Est Lancé:</label>
-          <label class="switch">
-            <input type="checkbox" id="hideLauncherOnGameStart" />
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <div class="ram-settings">
-          <div class="setting">
-            <label for="allocated-ram">Mémoire Allouée:</label>
-            <input
-              type="range"
-              id="allocated-ram"
-              min="1"
-              max="8"
-              step="1"
-              value="4"
-            />
-            <span id="allocated-ram-value"></span>
-            <span id="total-ram"></span>
-          </div>
-        </div>
-      </div>
-      <div class="account-settings">
-        <h1 class="title">Compte</h1>
-        <div class="user-card">
-          <div class="user-info">
-            <figure class="user-avatar" id="user-avatar"></figure>
-            <div class="user-details">
-              <p class="username" id="username"></p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../assets/css/toast.css" />
+        <link rel="stylesheet" href="../assets/css/style.css" />
+        <link rel="stylesheet" href="../assets/css/settings.css" />
+        <script src="../assets/js/scripts/toast.js"></script>
+        <script src="../assets/js/scripts/script.js"></script>
+        <script src="../assets/js/scripts/settings.js"></script>
+    </head>
+    <body>
+        <div class="settings-container">
+            <div class="main-settings">
+                <h1 class="title">Minecraft</h1>
+                <div class="setting">
+                    <label for="resolution">Résolution:</label>
+                    <div class="resolution-input">
+                        <input type="text" id="resolution-width" />
+                        <span class="separator">x</span>
+                        <input type="text" id="resolution-height" />
+                    </div>
+                </div>
+                <div class="setting">
+                    <label for="fullscreen">Plein Écran:</label>
+                    <label class="switch">
+                        <input type="checkbox" id="fullscreen" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="setting">
+                    <label for="detached"
+                        >Détacher Minecraft Du Launceur:</label
+                    >
+                    <label class="switch">
+                        <input type="checkbox" id="detached" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="setting">
+                    <label for="hideLauncherOnGameStart"
+                        >Cacher Le Lanceur Lorsque Minecraft Est Lancé:</label
+                    >
+                    <label class="switch">
+                        <input type="checkbox" id="hideLauncherOnGameStart" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="ram-settings">
+                    <div class="setting">
+                        <label for="allocated-ram">Mémoire Allouée:</label>
+                        <input
+                            type="range"
+                            id="allocated-ram"
+                            min="1"
+                            max="8"
+                            step="1"
+                            value="4"
+                        />
+                        <span id="allocated-ram-value"></span>
+                        <span id="total-ram"></span>
+                    </div>
+                </div>
             </div>
-            <div class="microsoft-logo">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="22"
-                height="22"
-                viewBox="0 0 23 23"
-              >
-                <path fill="#f35325" d="M1 1h10v10H1z" />
-                <path fill="#81bc06" d="M12 1h10v10H12z" />
-                <path fill="#05a6f0" d="M1 12h10v10H1z" />
-                <path fill="#ffba08" d="M12 12h10v10H12z" />
-              </svg>
+            <div class="main-settings">
+                <h1 class="title">Compte</h1>
+                <div class="user-card">
+                    <div class="user-info">
+                        <figure class="user-avatar" id="user-avatar"></figure>
+                        <div class="user-details">
+                            <p class="username" id="username"></p>
+                        </div>
+                        <div class="microsoft-logo">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="22"
+                                height="22"
+                                viewBox="0 0 23 23"
+                            >
+                                <path fill="#f35325" d="M1 1h10v10H1z" />
+                                <path fill="#81bc06" d="M12 1h10v10H12z" />
+                                <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                                <path fill="#ffba08" d="M12 12h10v10H12z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="user-uuid">
-            <p id="uuid">UUID:</p>
-          </div>
         </div>
-      </div>
-    </div>
-    <div class="btn-container">
-      <button class="btn btn-primary" id="save-btn">Sauvegarder</button>
-      <button class="btn btn-danger" id="cancel-btn">Annuler</button>
-    </div>
-  </body>
+        <div class="btn-container">
+            <button class="btn btn-primary" id="save-btn">Sauvegarder</button>
+            <button class="btn btn-danger" id="cancel-btn">Annuler</button>
+        </div>
+    </body>
 </html>

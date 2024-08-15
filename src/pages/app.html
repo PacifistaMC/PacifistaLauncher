@@ -1,30 +1,45 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../assets/css/toast.css" />
-    <link rel="stylesheet" href="../assets/css/style.css" />
-    <link rel="stylesheet" href="../assets/css/app.css" />
-    <script src="../assets/js/scripts/toast.js"></script>
-    <script src="../assets/js/scripts/script.js"></script>
-    <script src="../assets/js/scripts/app.js"></script>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../assets/css/toast.css" />
+        <link rel="stylesheet" href="../assets/css/style.css" />
+        <link rel="stylesheet" href="../assets/css/app.css" />
+        <script src="../assets/js/scripts/toast.js"></script>
+        <script src="../assets/js/scripts/script.js"></script>
+        <script src="../assets/js/scripts/app.js"></script>
+    </head>
 
-  <body>
-    <figure class="user-avatar" id="avatar"></figure>
-    <h1>Bienvenue <b id="pseudo"></b></h1>
-    <div class="card">
-      <p><b>Pacifista:</b> 0/50 Joueurs connectés</p>
-      <div class="container" id="servers">
-        
-      </div>
-    </div>
-    <footer>
-      <button class="btn btn-primary" id="settings">PARAMÈTRES</button>
-      <button class="btn btn-primary" id="play">JOUER</button>
-      <button class="btn btn-primary" id="logout">DÉCONNEXION</button>
-      <button class="btn btn-primary" id="shop">BOUTIQUE</button>
-    </footer>
-  </body>
+    <body>
+        <section class="section left-section">
+            <figure class="user-avatar" id="avatar"></figure>
+            <h1 class="outfit">
+                Bienvenue, <b class="primary" id="pseudo"></b>
+            </h1>
+
+            <button class="btn btn-primary clickable" id="play">Jouer</button>
+            <button class="btn btn-invisible clickable" id="settings">
+                Paramètres
+            </button>
+            <button class="btn btn-invisible" id="shop">Boutique</button>
+            <button class="btn btn-invisible" id="wiki">Wiki</button>
+            <button class="btn btn-invisible" id="discord">Discord</button>
+            <button class="btn btn-invisible" id="logout">Déconnexion</button>
+        </section>
+        <section class="section right-section">
+            <header class="server-status" id="server-status">
+                <p class="status outfit">Serveurs:</p>
+            </header>
+            <img
+                class="logo"
+                src="../assets/images/pacifista-logo-768x768.png"
+                alt="Logo de Pacifista"
+            />
+            <h1 class="outfit title primary">Pacifista</h1>
+            <h1 class="outfit">
+                <b class="primary" id="online-players"></b> Joueurs connectés
+            </h1>
+        </section>
+    </body>
 </html>
