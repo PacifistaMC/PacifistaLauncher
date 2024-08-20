@@ -92,3 +92,7 @@ ipcMain.on(OPCODES.MC_STOPPED, () => {
 ipcMain.on(OPCODES.ERROR, (err) => {
     mainWindow.webContents.send(OPCODES.ERROR, err);
 });
+
+ipcMain.on(OPCODES.PROGRESS, (data) => {
+    mainWindow.webContents.send(OPCODES.PROGRESS, data);
+});

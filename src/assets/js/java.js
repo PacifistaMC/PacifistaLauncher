@@ -6,7 +6,7 @@ const axios = require('axios');
 const path = require('path');
 const configManager = require('./configmanager');
 const fileUtils = require('./fileUtils');
-const { ERRORS } = require('./constants');
+const { ERRORS, OPCODES } = require('./constants');
 const { ipcMain } = require('electron');
 
 const logger = getLogger("Java Utils");
@@ -15,7 +15,9 @@ const logger = getLogger("Java Utils");
 const desiredJavaVersion = '17';
 
 exports.fullJavaCheck = async function () {
+    emitJavaProgress("Vérification", 0);
     if (!await hasJavaOnCorrectVersion()) {
+        emitJavaProgress("Vérification", 100);
         logger.error(ERRORS.JAVA_NOT_INSTALLED);
         ipcMain.emit(ERRORS.JAVA_NOT_INSTALLED);
 
@@ -46,6 +48,7 @@ exports.fullJavaCheck = async function () {
         logger.info("Java a bien été installé.");
     } else {
         logger.info("Java est déjà installé.");
+        emitJavaProgress("Vérification", 100);
     }
 }
 
@@ -183,3 +186,10 @@ function getLauncherRuntimeDir() {
 
     return runtimePath;
 }
+
+function emitJavaProgress( message, progress ) {
+    ipcMain.emit(OPCODES.PROGRESS, {
+        type: `Java: ${message}`,
+        progress: progress
+    });
+};
