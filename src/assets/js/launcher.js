@@ -30,6 +30,20 @@ launcher.on('close', () => {
     });
 });
 
+
+let lastProgress;
+launcher.on('progress', (data) => {
+    const progress = Math.floor((data.task / data.total) * 100);
+    if (lastProgress && lastProgress == progress) return;
+
+    ipcMain.emit(OPCODES.PROGRESS, {
+        type: data.type,
+        progress: progress
+    });
+
+    lastProgress = progress;
+});
+
 exports.launchGame = async function () {
     const config = configManager.getConfig();
     await installMinecraft(config);

@@ -8,7 +8,7 @@ const StreamZip = require('node-stream-zip');
 const tar = require('tar-fs');
 const zlib = require('zlib');
 const { ipcMain } = require('electron');
-const { ERRORS } = require('./constants');
+const { ERRORS, OPCODES } = require('./constants');
 
 const logger = getLogger("Files Utils");
 
@@ -19,7 +19,17 @@ exports.downloadFile = function (url, downloadPath) {
         axios.default({
             url,
             method: 'GET',
-            responseType: 'stream'
+            responseType: 'stream',
+            onDownloadProgress: (progressEvent) => {
+                const { progress } = progressEvent;
+
+                if (progress) {
+                    ipcMain.emit(OPCODES.PROGRESS, {
+                        type: "Téléchargement",
+                        progress: Math.floor(progress * 100)
+                    });
+                }
+            }
         }).then((res) => {
             const fileStream = fs.createWriteStream(downloadPath);
             res.data.pipe(fileStream);

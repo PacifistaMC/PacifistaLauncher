@@ -1,3 +1,7 @@
+let progressContainer;
+let progressBar;
+let progressType;
+
 window.onload = async function () {
     toast.success({
         title: "Succès !",
@@ -6,7 +10,7 @@ window.onload = async function () {
         transitionIn: "fadeInUp"
     });
 
-    const { VIEWS, URL } = window.bridge.constants;
+    const { VIEWS, URL } = constants;
     const config = await window.bridge.getConfig();
     const user = config.authenticationDatabase[config.selectedAccount];
     const info = await window.bridge.getData(URL.PACIFISTA_INFO);
@@ -30,6 +34,10 @@ window.onload = async function () {
     const logout = document.getElementById("logout");
     const onlinePlayers = document.getElementById("online-players");
     const serverStatus = document.getElementById("server-status");
+
+    progressContainer = document.getElementById("progress-container");
+    progressBar = document.getElementById("progress-bar");
+    progressType = document.getElementById("progress-type");
 
     avatar.style.backgroundImage = `url('https://mc-heads.net/body/${user.uuid}/right')`;
     pseudo.textContent = user.name;
@@ -82,6 +90,22 @@ window.onload = async function () {
         serverStatus.appendChild(statusNode);
     }
 }
+
+const done = [];
+on(constants.OPCODES.PROGRESS, (data) => {
+    console.log(data)
+    if (!done.includes(data.type) && progressContainer.style.visibility == "hidden") {
+        progressContainer.style.visibility = "visible";
+    }
+
+    progressType.textContent = data.type;
+    progressBar.style.width = `${data.progress}%`;
+
+    if (data.progress == 100) {
+        done.push(data.type);
+        progressContainer.style.visibility = "hidden";
+    }
+});
 
 function getStatusNode() {
     const statusNode = document.createElement("p");

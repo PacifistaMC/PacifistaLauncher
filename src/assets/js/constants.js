@@ -23,6 +23,7 @@ exports.OPCODES = {
     MC_STARTED: "MC_STARTED",
     MC_STOPPED: "MC_STOPPED",
     ERROR: "ERROR",
+    PROGRESS: "PROGRESS"
 };
 
 exports.REPLY_TYPES = {

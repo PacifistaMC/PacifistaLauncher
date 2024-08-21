@@ -67,3 +67,32 @@ h1 {
 .offline {
     color: var(--danger-primary-color);
 }
+
+.progress-bar-container {
+    margin-top: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
+    width: 100%;
+
+    visibility: hidden;
+}
+
+.progress-bar {
+    position: relative;
+    border-radius: 50px;
+    height: 3vh;
+    width: 20vw;
+    background-color: gray;
+}
+
+.progress-bar .in {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    background-color: var(--primary-color);
+    border-radius: 50px;
+}
