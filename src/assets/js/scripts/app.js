@@ -78,7 +78,7 @@ window.onload = async function () {
         info.servers.forEach(server => {
             const statusNode = getStatusNode();
             statusNode.textContent = server.name;
-            statusNode.classList.add(server.online ? "online" : "offline");
+            statusNode.classList.add(server.isOnline ? "online" : "offline");
 
             serverStatus.appendChild(statusNode);
         });
