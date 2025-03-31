@@ -5,8 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "buildW": "electron-builder build -w",
-    "buildM": "electron-builder build -m"
+    "buildW": "electron-builder build -w --publish=never",
+    "buildM": "electron-builder build -m --publish=never"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,9 @@
     "pacifista",
     "minecraft",
     "serveur",
-    "survie"
+    "survie",
+    "electron",
+    "launcher"
   ],
   "author": "FunixG (antoine.pronnier@gmail.com)",
   "license": "ISC",
